@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "historical_source_revision": "03f1193ab5e4e2981a3aadf4d70c44215eac0ae4",
+  "historical_source_files": [
+    {
+      "role": "training_loop_and_configuration",
+      "sha256": "eab436cfd6eccd8ce411bf077d3b282d46e1ee8d9b7e453c244578c83a950776"
+    },
+    {
+      "role": "reference_conditioned_model_and_shift_route",
+      "sha256": "a1f703f5c388b81dc46039f06a4139a4ecac311804447b8ff4e55cea8ef6e86f"
+    },
+    {
+      "role": "full_training_objective",
+      "sha256": "c673d50d5025f4f24b987a4c6eea332457433360df49f662be0cb1fcbdaa3abc"
+    },
+    {
+      "role": "online_spectrum_generator",
+      "sha256": "b66b5e7971fc43167e383d8dc1a02c887f6c35bf07011ddd31dc35f16d3026f9"
+    },
+    {
+      "role": "online_and_fixed_validation_dataloaders",
+      "sha256": "b5830e4bf098c22538ec544256a3414e783268078fa80a75077f685893aa84bd"
+    },
+    {
+      "role": "independent_scipy_forward_model",
+      "sha256": "d91535d1dee8ce7f4acd9c81283ae28a93e1fb2086139bcf10676bb47f984cc1"
+    },
+    {
+      "role": "truncated_gaussian_isotope_target",
+      "sha256": "21368beab3a8f65aed8988b8f1e138d42681ac14075bcb9cc39c308c63e0a9c4"
+    }
+  ],
+  "published_checkpoints": [
+    {
+      "role": "learned_fitter",
+      "path": "artifacts/checkpoints/solution_selector.pth",
+      "sha256": "13db17a026ab5826b98eb60b88eab0583430f4a97926244ac37940e4fe910ed4",
+      "selected_zero_based_online_update": 18736,
+      "completed_online_updates": 18737,
+      "completed_adam_steps": 299792
+    },
+    {
+      "role": "component_supervision_ablation",
+      "path": "artifacts/checkpoints/component_supervision_ablation.pth",
+      "sha256": "9dc3a1124b1f51e4285827baa4d38d5d0a055dfbb08396984a0d58ef87679a75",
+      "selected_zero_based_online_update": 18659,
+      "completed_online_updates": 18660,
+      "completed_adam_steps": 298560
+    }
+  ],
+  "random_seed_recorded_for_historical_runs": false,
+  "ablation_source_status": "The ablation checkpoint and complete history are preserved. A separate historical ablation launcher was not preserved; the public objective implements the paper-specified removal of the four component-supervision terms while retaining both reconstruction losses and isotope KL.",
+  "public_reimplementation_scope": "Algorithmic and numerical reproduction of the generator, model, objective, optimizer, scheduler, and online-update protocol. The unrecorded historical RNG state prevents a claim of bitwise checkpoint retraining."
+}

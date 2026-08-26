@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1120" viewBox="0 0 1800 1120" role="img" aria-labelledby="title desc">
+  <title id="title">Simulation training and direct gradient routing</title>
+  <desc id="desc">One generated simulation batch supplies a jointly normalized lithium and Neon input and simulation targets. A shared network produces physical, isotope and wavelength-shift parameter rows. Physical fitting losses directly supervise rows zero to five through all eight components and the canonical reconstruction, isotope KL directly supervises row six, and shifted reconstruction directly supervises row seven. The diagram shows the task-level stop-gradient boundaries for the isotope expectation and the canonical spectrum before shifting.</desc>
+
+  <defs>
+    <marker id="arrow" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L17,9 L1,17 Z" fill="#263238"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L17,9 L1,17 Z" fill="#236a96"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L17,9 L1,17 Z" fill="#74508f"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L17,9 L1,17 Z" fill="#b95f18"/>
+    </marker>
+    <style>
+      .title { font-family: Arial, Helvetica, sans-serif; font-size: 48px; font-weight: 700; fill: #17212b; }
+      .subtitle { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 400; fill: #455a64; }
+      .boxTitle { font-family: Arial, Helvetica, sans-serif; font-size: 36px; font-weight: 700; fill: #17212b; }
+      .body { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 400; fill: #263238; }
+      .emph { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 700; fill: #17212b; }
+      .routeLabel { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 700; }
+      .legend { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 400; fill: #37474f; }
+      .sgText { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 700; fill: #9f1c16; }
+      .forward { fill: none; stroke: #263238; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+      .line { fill: none; stroke: #263238; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+      .bridge { fill: none; stroke: #ffffff; stroke-width: 12; stroke-linecap: round; stroke-linejoin: round; }
+      .gradBlue { fill: none; stroke: #236a96; stroke-width: 4; stroke-dasharray: 12 9; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowBlue); }
+      .gradPurple { fill: none; stroke: #74508f; stroke-width: 4; stroke-dasharray: 12 9; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowPurple); }
+      .gradOrange { fill: none; stroke: #b95f18; stroke-width: 4; stroke-dasharray: 12 9; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowOrange); }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1120" fill="#ffffff"/>
+  <text class="title" x="40" y="58">Simulation training and direct gradient routing</text>
+  <text class="subtitle" x="40" y="105">Each batch supplies the model input and the simulation-only targets used by the three loss branches.</text>
+
+  <!-- Generated batch -->
+  <rect x="35" y="150" width="330" height="470" rx="20" fill="#f2f4f6" stroke="#52616b" stroke-width="4"/>
+  <text class="boxTitle" x="200" y="198" text-anchor="middle">Generated batch</text>
+  <line x1="65" y1="220" x2="335" y2="220" stroke="#aab4ba" stroke-width="3"/>
+  <text class="emph" x="65" y="262">Input</text>
+  <text class="body" x="65" y="304">joint-normalized</text>
+  <text class="body" x="65" y="344">Li + Ne spectra</text>
+  <text class="emph" x="65" y="398">Targets</text>
+  <text class="body" x="65" y="440">8 components</text>
+  <text class="body" x="65" y="480">canonical total</text>
+  <text class="body" x="65" y="520">input-frame total</text>
+  <text class="body" x="65" y="560">isotope soft label</text>
+
+  <!-- Shared network -->
+  <path class="forward" d="M365,310 H395"/>
+  <rect x="405" y="220" width="300" height="245" rx="20" fill="#e8eef4" stroke="#405a70" stroke-width="4"/>
+  <text class="boxTitle" x="555" y="270" text-anchor="middle">Shared network</text>
+  <text class="body" x="555" y="320" text-anchor="middle">dual-stream</text>
+  <text class="body" x="555" y="360" text-anchor="middle">encoder</text>
+  <text class="body" x="555" y="410" text-anchor="middle">shared classifier</text>
+
+  <!-- Shared output branching -->
+  <path class="line" d="M705,345 H735 M735,240 V845"/>
+  <path class="forward" d="M735,240 H760"/>
+  <path class="forward" d="M735,545 H760"/>
+  <path class="forward" d="M735,845 H760"/>
+
+  <!-- Parameter rows -->
+  <rect x="775" y="170" width="270" height="140" rx="16" fill="#eaf4fa" stroke="#236a96" stroke-width="4"/>
+  <text class="boxTitle" x="910" y="220" text-anchor="middle">Rows 0–5</text>
+  <text class="body" x="910" y="258" text-anchor="middle">line-shape</text>
+  <text class="body" x="910" y="294" text-anchor="middle">parameters</text>
+
+  <rect x="775" y="475" width="270" height="140" rx="16" fill="#f2edf7" stroke="#74508f" stroke-width="4"/>
+  <text class="boxTitle" x="910" y="525" text-anchor="middle">Row 6</text>
+  <text class="body" x="910" y="562" text-anchor="middle">&#x2076;Li percentage</text>
+  <text class="body" x="910" y="598" text-anchor="middle">expectation r</text>
+
+  <rect x="775" y="775" width="270" height="140" rx="16" fill="#fff1e7" stroke="#b95f18" stroke-width="4"/>
+  <text class="boxTitle" x="910" y="825" text-anchor="middle">Row 7</text>
+  <text class="body" x="910" y="862" text-anchor="middle">fractional shift</text>
+  <text class="body" x="910" y="898" text-anchor="middle">expectation s</text>
+
+  <!-- Physics decoder -->
+  <path class="forward" d="M1045,240 H1080"/>
+  <rect x="1090" y="150" width="310" height="255" rx="18" fill="#eaf4fa" stroke="#236a96" stroke-width="4"/>
+  <text class="boxTitle" x="1245" y="198" text-anchor="middle">Physics decoder</text>
+  <text class="body" x="1245" y="244" text-anchor="middle">4 emission +</text>
+  <text class="body" x="1245" y="284" text-anchor="middle">4 absorption</text>
+  <text class="body" x="1245" y="330" text-anchor="middle">canonical</text>
+  <text class="body" x="1245" y="370" text-anchor="middle">spectrum</text>
+
+  <!-- Physical fitting losses -->
+  <path class="forward" d="M1400,240 H1440"/>
+  <rect x="1450" y="150" width="315" height="255" rx="18" fill="#f7fbfd" stroke="#236a96" stroke-width="4"/>
+  <text class="boxTitle" x="1607.5" y="198" text-anchor="middle">Physical losses</text>
+  <text class="body" x="1607.5" y="244" text-anchor="middle">selected D1 pair</text>
+  <text class="body" x="1607.5" y="284" text-anchor="middle">component / height</text>
+  <text class="body" x="1607.5" y="324" text-anchor="middle">position / canonical</text>
+  <text class="routeLabel" x="1607.5" y="380" text-anchor="middle" fill="#236a96">→ rows 0–5</text>
+
+  <!-- Physical direct gradient -->
+  <path class="gradBlue" d="M1608,405 V420 H910 V310"/>
+
+  <!-- Isotope KL and detached isotope value used by decoder -->
+  <path class="forward" d="M1045,545 H1090"/>
+  <rect x="1100" y="475" width="300" height="150" rx="18" fill="#f7f3fa" stroke="#74508f" stroke-width="4"/>
+  <text class="boxTitle" x="1250" y="526" text-anchor="middle">Isotope KL loss</text>
+  <text class="body" x="1250" y="568" text-anchor="middle">soft isotope label</text>
+  <text class="routeLabel" x="1250" y="612" text-anchor="middle" fill="#74508f">→ row 6</text>
+
+  <path class="line" d="M1045,500 H1067 V469"/>
+  <rect x="1032" y="425" width="70" height="44" rx="9" fill="#fff1f0" stroke="#b42318" stroke-width="3"/>
+  <text class="sgText" x="1067" y="458" text-anchor="middle">SG</text>
+  <path class="bridge" d="M1067,425 V390 H1090"/>
+  <path class="forward" d="M1067,425 V390 H1090"/>
+
+  <!-- Isotope direct gradient -->
+  <path class="gradPurple" d="M1250,625 V665 H910 V615"/>
+
+  <!-- Canonical spectrum is detached before shifting -->
+  <path class="bridge" d="M1400,370 H1425 V652"/>
+  <path class="line" d="M1400,370 H1425 V652"/>
+  <rect x="1390" y="652" width="70" height="46" rx="9" fill="#fff1f0" stroke="#b42318" stroke-width="3"/>
+  <text class="sgText" x="1425" y="686" text-anchor="middle">SG</text>
+  <path class="forward" d="M1425,698 V720 H1370 V735"/>
+
+  <!-- Shift operation and shifted reconstruction loss -->
+  <path class="forward" d="M1045,845 H1090"/>
+  <rect x="1100" y="745" width="340" height="175" rx="18" fill="#fff1e7" stroke="#b95f18" stroke-width="4"/>
+  <text class="boxTitle" x="1270" y="795" text-anchor="middle">Shift operation</text>
+  <text class="body" x="1270" y="844" text-anchor="middle">shift(Rcanon, s)</text>
+  <text class="body" x="1270" y="888" text-anchor="middle">input-frame spectrum</text>
+
+  <path class="forward" d="M1440,833 H1480"/>
+  <rect x="1490" y="745" width="275" height="200" rx="18" fill="#fff8f3" stroke="#b95f18" stroke-width="4"/>
+  <text class="boxTitle" x="1627.5" y="795" text-anchor="middle">Shifted loss</text>
+  <text class="body" x="1627.5" y="844" text-anchor="middle">input-frame</text>
+  <text class="body" x="1627.5" y="884" text-anchor="middle">target</text>
+  <text class="routeLabel" x="1627.5" y="930" text-anchor="middle" fill="#b95f18">→ row 7</text>
+
+  <!-- Shift direct gradient -->
+  <path class="gradOrange" d="M1628,945 V985 H910 V915"/>
+
+  <!-- Shared-representation note -->
+  <rect x="35" y="650" width="650" height="210" rx="18" fill="#f8fafb" stroke="#7b8a93" stroke-width="3"/>
+  <text class="emph" x="360" y="700" text-anchor="middle">Shared representation</text>
+  <text class="body" x="360" y="750" text-anchor="middle">All three routes continue through</text>
+  <text class="body" x="360" y="792" text-anchor="middle">their supervised row into the same</text>
+  <text class="body" x="360" y="834" text-anchor="middle">encoder and classifier.</text>
+
+  <!-- Legend -->
+  <line x1="45" y1="1060" x2="115" y2="1060" stroke="#263238" stroke-width="4"/>
+  <path d="M115,1051 L133,1060 L115,1069 Z" fill="#263238"/>
+  <text class="legend" x="150" y="1071">forward value</text>
+  <line x1="420" y1="1060" x2="490" y2="1060" stroke="#236a96" stroke-width="4" stroke-dasharray="12 9"/>
+  <path d="M490,1051 L508,1060 L490,1069 Z" fill="#236a96"/>
+  <text class="legend" x="525" y="1071">direct gradient route</text>
+  <rect x="925" y="1037" width="70" height="46" rx="9" fill="#fff1f0" stroke="#b42318" stroke-width="3"/>
+  <text class="sgText" x="960" y="1071" text-anchor="middle">SG</text>
+  <text class="legend" x="1015" y="1071">stop-gradient; forward value retained</text>
+</svg>

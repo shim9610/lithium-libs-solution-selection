@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1200" viewBox="0 0 1800 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Reference-conditioned spectral fitting architecture</title>
+  <desc id="desc">Panel a shows jointly normalized lithium and Neon spectra entering separate tokenization streams, followed by six blocks of lithium self-attention and Neon-conditioned cross-attention, a shared class token and an eight-row categorical classifier. Panel b shows bounded expectation decoding, fixed-physics construction of eight Voigt components in the canonical frame and a row-seven fractional shift that produces the input-frame reconstruction.</desc>
+
+  <defs>
+    <marker id="arrow" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L17,9 L1,17 Z" fill="#263238"/>
+    </marker>
+    <style>
+      .title { font-family: Arial, Helvetica, sans-serif; font-size: 48px; font-weight: 700; fill: #17212b; }
+      .subtitle { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 400; fill: #455a64; }
+      .panelTitle { font-family: Arial, Helvetica, sans-serif; font-size: 36px; font-weight: 700; fill: #17212b; }
+      .boxTitle { font-family: Arial, Helvetica, sans-serif; font-size: 36px; font-weight: 700; fill: #17212b; }
+      .body { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 400; fill: #263238; }
+      .emph { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 700; fill: #17212b; }
+      .blueText { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 700; fill: #236a96; }
+      .purpleText { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 700; fill: #74508f; }
+      .orangeText { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 700; fill: #b95f18; }
+      .forward { fill: none; stroke: #263238; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+      .line { fill: none; stroke: #263238; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1200" fill="#ffffff"/>
+  <text class="title" x="40" y="58">Reference-conditioned spectral fitting architecture</text>
+  <text class="subtitle" x="40" y="104">A shared representation maps paired spectra to bounded parameters and a differentiable physical reconstruction.</text>
+
+  <!-- Panel a -->
+  <rect x="30" y="130" width="1740" height="450" rx="22" fill="#fbfcfd" stroke="#9aa8b1" stroke-width="3"/>
+  <text class="panelTitle" x="55" y="174">(a) Dual-stream encoder and categorical classifier</text>
+
+  <!-- Input pair -->
+  <rect x="55" y="210" width="270" height="305" rx="18" fill="#f2f4f6" stroke="#52616b" stroke-width="4"/>
+  <text class="boxTitle" x="190" y="258" text-anchor="middle">Paired input</text>
+  <text class="body" x="190" y="302" text-anchor="middle">2 × 512</text>
+  <text class="body" x="190" y="344" text-anchor="middle">joint min–max</text>
+  <rect x="82" y="372" width="216" height="55" rx="10" fill="#eaf4fa" stroke="#236a96" stroke-width="3"/>
+  <text class="body" x="190" y="410" text-anchor="middle">Li spectrum</text>
+  <rect x="82" y="444" width="216" height="55" rx="10" fill="#eef5f1" stroke="#4f7f68" stroke-width="3"/>
+  <text class="body" x="190" y="482" text-anchor="middle">Ne reference</text>
+
+  <!-- Li and Ne tokenization -->
+  <path class="forward" d="M325,399 H360 V295 H380"/>
+  <rect x="390" y="195" width="340" height="220" rx="18" fill="#eaf4fa" stroke="#236a96" stroke-width="4"/>
+  <text class="boxTitle" x="560" y="244" text-anchor="middle">Li patch embedding</text>
+  <text class="body" x="560" y="292" text-anchor="middle">Conv1d</text>
+  <text class="body" x="560" y="336" text-anchor="middle">64 tokens + CLS</text>
+  <text class="body" x="560" y="380" text-anchor="middle">+ positional encoding</text>
+
+  <path class="forward" d="M325,472 H380"/>
+  <rect x="390" y="435" width="340" height="115" rx="18" fill="#eef5f1" stroke="#4f7f68" stroke-width="4"/>
+  <text class="boxTitle" x="560" y="480" text-anchor="middle">Ne reference CNN</text>
+  <text class="body" x="560" y="524" text-anchor="middle">4 stages → 8 tokens</text>
+
+  <!-- Repeated fusion blocks -->
+  <rect x="790" y="190" width="380" height="360" rx="20" fill="#f3f1e8" stroke="#756d4b" stroke-width="4"/>
+  <path class="forward" d="M730,305 H815"/>
+  <path class="forward" d="M730,493 H815"/>
+  <text class="boxTitle" x="980" y="238" text-anchor="middle">6 × fusion blocks</text>
+
+  <rect x="825" y="262" width="310" height="100" rx="14" fill="#fff9e7" stroke="#9a7b20" stroke-width="3"/>
+  <text class="emph" x="980" y="306" text-anchor="middle">Self-attention</text>
+  <text class="body" x="980" y="347" text-anchor="middle">Li + CLS tokens</text>
+
+  <path class="forward" d="M980,362 V388"/>
+  <rect x="825" y="398" width="310" height="130" rx="14" fill="#edf5f0" stroke="#4f7f68" stroke-width="3"/>
+  <text class="emph" x="980" y="440" text-anchor="middle">Cross-attention</text>
+  <text class="body" x="980" y="480" text-anchor="middle">Q: Li / CLS</text>
+  <text class="body" x="980" y="518" text-anchor="middle">K,V: Ne tokens</text>
+
+  <!-- Shared CLS and classifier -->
+  <path class="forward" d="M1170,345 H1200"/>
+  <rect x="1210" y="250" width="230" height="190" rx="18" fill="#edf1f5" stroke="#405a70" stroke-width="4"/>
+  <text class="boxTitle" x="1325" y="298" text-anchor="middle">Final CLS</text>
+  <text class="body" x="1325" y="344" text-anchor="middle">288-D</text>
+  <text class="body" x="1325" y="386" text-anchor="middle">shared</text>
+  <text class="body" x="1325" y="424" text-anchor="middle">representation</text>
+
+  <path class="forward" d="M1440,345 H1475"/>
+  <rect x="1485" y="225" width="255" height="235" rx="18" fill="#f2edf7" stroke="#74508f" stroke-width="4"/>
+  <text class="boxTitle" x="1612.5" y="274" text-anchor="middle">Classifier</text>
+  <text class="body" x="1612.5" y="322" text-anchor="middle">MLP</text>
+  <text class="body" x="1612.5" y="370" text-anchor="middle">8 × 300</text>
+  <text class="body" x="1612.5" y="414" text-anchor="middle">logits z</text>
+
+  <!-- Panel b -->
+  <rect x="30" y="620" width="1740" height="540" rx="22" fill="#fbfcfd" stroke="#9aa8b1" stroke-width="3"/>
+  <text class="panelTitle" x="55" y="665">(b) Bounded parameter decoding and physical reconstruction</text>
+
+  <!-- Categorical rows -->
+  <rect x="55" y="705" width="320" height="425" rx="18" fill="#f2f4f6" stroke="#52616b" stroke-width="4"/>
+  <text class="boxTitle" x="215" y="754" text-anchor="middle">Categorical z</text>
+  <text class="body" x="215" y="798" text-anchor="middle">8 rows × 300 bins</text>
+
+  <rect x="82" y="820" width="266" height="90" rx="12" fill="#eaf4fa" stroke="#236a96" stroke-width="3"/>
+  <text class="blueText" x="215" y="858" text-anchor="middle">rows 0–5</text>
+  <text class="body" x="215" y="896" text-anchor="middle">line shape</text>
+
+  <rect x="82" y="925" width="266" height="80" rx="12" fill="#f2edf7" stroke="#74508f" stroke-width="3"/>
+  <text class="purpleText" x="215" y="961" text-anchor="middle">row 6</text>
+  <text class="body" x="215" y="992" text-anchor="middle">&#x2076;Li percentage</text>
+
+  <rect x="82" y="1020" width="266" height="80" rx="12" fill="#fff1e7" stroke="#b95f18" stroke-width="3"/>
+  <text class="orangeText" x="215" y="1056" text-anchor="middle">row 7</text>
+  <text class="body" x="215" y="1087" text-anchor="middle">fractional shift</text>
+
+  <!-- Expectation -->
+  <path class="forward" d="M375,860 H420"/>
+  <rect x="430" y="750" width="270" height="200" rx="18" fill="#edf1f5" stroke="#405a70" stroke-width="4"/>
+  <text class="boxTitle" x="565" y="800" text-anchor="middle">Softmax</text>
+  <text class="boxTitle" x="565" y="840" text-anchor="middle">expectation</text>
+  <text class="body" x="565" y="890" text-anchor="middle">bounded θ</text>
+  <text class="body" x="565" y="932" text-anchor="middle">for each row</text>
+
+  <!-- Physics decoding -->
+  <path class="forward" d="M700,835 H750"/>
+  <rect x="760" y="720" width="360" height="230" rx="18" fill="#eaf4fa" stroke="#236a96" stroke-width="4"/>
+  <text class="boxTitle" x="940" y="765" text-anchor="middle">Physics decoder</text>
+  <text class="blueText" x="940" y="807" text-anchor="middle">uses rows 0–6</text>
+  <text class="body" x="940" y="847" text-anchor="middle">internal trainable c, a</text>
+  <text class="body" x="940" y="887" text-anchor="middle">fixed spacing ratios</text>
+  <text class="body" x="940" y="927" text-anchor="middle">Voigt rendering</text>
+
+  <path class="forward" d="M1120,835 H1170"/>
+  <rect x="1180" y="720" width="300" height="230" rx="18" fill="#f7fbfd" stroke="#236a96" stroke-width="4"/>
+  <text class="boxTitle" x="1330" y="765" text-anchor="middle">Canonical frame</text>
+  <text class="body" x="1330" y="815" text-anchor="middle">4 emission +</text>
+  <text class="body" x="1330" y="855" text-anchor="middle">4 absorption</text>
+  <text class="body" x="1330" y="905" text-anchor="middle">total Rcanon</text>
+
+  <!-- Row-7 shift branch -->
+  <path class="line" d="M565,950 V1060 H1170"/>
+  <text class="orangeText" x="900" y="1048" text-anchor="middle">row 7</text>
+  <path class="forward" d="M1170,1060 H1180"/>
+  <path class="forward" d="M1330,950 V980"/>
+  <rect x="1180" y="990" width="300" height="140" rx="18" fill="#fff1e7" stroke="#b95f18" stroke-width="4"/>
+  <text class="boxTitle" x="1330" y="1038" text-anchor="middle">Fractional shift</text>
+  <text class="body" x="1330" y="1085" text-anchor="middle">using row 7</text>
+
+  <path class="forward" d="M1480,1060 H1490"/>
+  <rect x="1500" y="990" width="245" height="140" rx="18" fill="#fff8f3" stroke="#b95f18" stroke-width="4"/>
+  <text class="boxTitle" x="1622.5" y="1038" text-anchor="middle">Input frame</text>
+  <text class="body" x="1622.5" y="1087" text-anchor="middle">shifted total</text>
+</svg>

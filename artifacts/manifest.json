@@ -1,0 +1,280 @@
+{
+  "schema_version": 1,
+  "hash_algorithm": "sha256",
+  "description": "Frozen public inputs and approved paper references.",
+  "artifacts": [
+    {
+      "path": "artifacts/training/component_supervision_ablation_history.csv",
+      "bytes": 1080340,
+      "sha256": "cc458343e451d2690c71012aaeef9ec8f7e5f1bc1b35abf9fc87fd044e0bea07",
+      "role": "training_history",
+      "figures": [6]
+    },
+    {
+      "path": "artifacts/training/full_objective_history.csv",
+      "bytes": 1075265,
+      "sha256": "8b07688a8c59adcd95bd427f9c99b0ad307efa697d284b3487f99dffc0df7db8",
+      "role": "training_history",
+      "figures": [6]
+    },
+    {
+      "path": "artifacts/training/provenance.json",
+      "bytes": 2470,
+      "sha256": "25876f5b7561a28f1a9a54d4e02b3f0c74cb78396a794bdc4dde6131966c95d9",
+      "role": "training_provenance",
+      "figures": [6]
+    },
+    {
+      "path": "artifacts/checkpoints/component_supervision_ablation.pth",
+      "bytes": 211489425,
+      "sha256": "9dc3a1124b1f51e4285827baa4d38d5d0a055dfbb08396984a0d58ef87679a75",
+      "role": "checkpoint",
+      "figures": [6]
+    },
+    {
+      "path": "artifacts/checkpoints/solution_selector.pth",
+      "bytes": 211489425,
+      "sha256": "13db17a026ab5826b98eb60b88eab0583430f4a97926244ac37940e4fe910ed4",
+      "role": "checkpoint",
+      "figures": [5, 6, 8]
+    },
+    {
+      "path": "artifacts/evaluation/component_supervision/full_objective.npz",
+      "bytes": 2313825,
+      "sha256": "438f0c30e17e4e304a991d0f8708a392bf9c23c627ffc47cde3e092916896a86",
+      "role": "preprocessed_evaluation",
+      "figures": [6]
+    },
+    {
+      "path": "artifacts/evaluation/component_supervision/without_component_supervision.npz",
+      "bytes": 2313732,
+      "sha256": "7fea31670fa5c3c0778a25106d8e9610cabe47edef7ab0e6ed519b975cf41990",
+      "role": "preprocessed_evaluation",
+      "figures": [6]
+    },
+    {
+      "path": "artifacts/evaluation/joint_refinement/per_spectrum.csv",
+      "bytes": 349814,
+      "sha256": "c441fa9942fd8c15b2d7adeb98f063d0685e24db545a1452b39cff65d9081171",
+      "role": "preprocessed_evaluation",
+      "figures": [9]
+    },
+    {
+      "path": "artifacts/evaluation/joint_refinement/summary.json",
+      "bytes": 958,
+      "sha256": "42b1718ad75859e3be0c9cc2d6843f68ecd9fb1b11fc9f34bd9a95f77662ebb5",
+      "role": "evaluation_summary",
+      "figures": [9]
+    },
+    {
+      "path": "artifacts/evaluation/measured_decomposition/component_fit_overlay_A.csv",
+      "bytes": 44056,
+      "sha256": "786c22b0d7743bfe1fd6aab7eb70c04d5405f6342520d9c29b40a36262ff09e8",
+      "role": "preprocessed_evaluation",
+      "figures": [7]
+    },
+    {
+      "path": "artifacts/evaluation/measured_decomposition/component_fit_overlay_B.csv",
+      "bytes": 44059,
+      "sha256": "de061f89666f8cbfe23c259c6065bcb3278e43c19513016c2e16d129127a5ea4",
+      "role": "preprocessed_evaluation",
+      "figures": [7]
+    },
+    {
+      "path": "artifacts/evaluation/measured_decomposition/isotope_labels.csv",
+      "bytes": 2349,
+      "sha256": "0a2e9300c79740eb0f18c27c34afc23c5cb18a81ef6129ae98188f47b82b16ae",
+      "role": "preprocessed_labels",
+      "figures": [7]
+    },
+    {
+      "path": "artifacts/evaluation/measured_decomposition/obs_recon_overlap_A.csv",
+      "bytes": 11399,
+      "sha256": "dc577467d27bffb778b900708785c9acf278ddbb114edf95676c690865c64dfe",
+      "role": "preprocessed_evaluation",
+      "figures": [7]
+    },
+    {
+      "path": "artifacts/evaluation/measured_decomposition/obs_recon_overlap_B.csv",
+      "bytes": 11412,
+      "sha256": "0bf13d518f50fc76090e445a6995a923b861d3e9ec01e69a6eee68a5c063b9bf",
+      "role": "preprocessed_evaluation",
+      "figures": [7]
+    },
+    {
+      "path": "artifacts/evaluation/measured_standards/calibration.json",
+      "bytes": 2413,
+      "sha256": "5ee84cfd1c0d34bc8e5eb1ce01c3f0c3dfa4d4730f4909c434bfec2607c1385c",
+      "role": "session_calibration",
+      "figures": [8]
+    },
+    {
+      "path": "artifacts/evaluation/measured_standards/isotope_labels.csv",
+      "bytes": 2349,
+      "sha256": "0a2e9300c79740eb0f18c27c34afc23c5cb18a81ef6129ae98188f47b82b16ae",
+      "role": "preprocessed_labels",
+      "figures": [8]
+    },
+    {
+      "path": "artifacts/evaluation/measured_standards/measurement_outputs.npz",
+      "bytes": 63214031,
+      "sha256": "9be87294a6ff4b379306a66b52c4a3bf94b92d147860f82eb85aaf236b7c05f8",
+      "role": "preprocessed_evaluation",
+      "figures": [8]
+    },
+    {
+      "path": "artifacts/evaluation/measured_standards/per_file.csv",
+      "bytes": 35168,
+      "sha256": "b4edd259d3d2991fb6ef7efadcd61f7554b49a5222cc1a569fe53a17ccea2133",
+      "role": "evaluation_record",
+      "figures": [8]
+    },
+    {
+      "path": "artifacts/evaluation/measured_standards/summary.csv",
+      "bytes": 1150,
+      "sha256": "7caaecd5214f60a672ab115af345b2d6863ee81414f1b86883648e2fc6f7ddb6",
+      "role": "evaluation_summary",
+      "figures": [8]
+    },
+    {
+      "path": "artifacts/evaluation/synthetic_benchmark/generation_seeds.npy",
+      "bytes": 400128,
+      "sha256": "abc61c05b7c741f5706e3333ab0bcf3d653a4d9d6a549c7a9b2792594a99a180",
+      "role": "generation_record",
+      "figures": [4]
+    },
+    {
+      "path": "artifacts/evaluation/synthetic_benchmark/random_spectra.csv",
+      "bytes": 72363018,
+      "sha256": "4d9097f94f379801f79b19850e49219a473bd802e9c4aa304021d401959a539a",
+      "role": "preprocessed_evaluation",
+      "figures": [4]
+    },
+    {
+      "path": "artifacts/evaluation/synthetic_benchmark/sampling_metadata.json",
+      "bytes": 658,
+      "sha256": "a037a69bc8ad0ef0ada35e38cffc56ec023c26055168294eff8aac5a22a34b54",
+      "role": "generation_record",
+      "figures": [4]
+    },
+    {
+      "path": "artifacts/evaluation/synthetic_multistart/arrays.npz",
+      "bytes": 640189,
+      "sha256": "5c1c48f4a402640a5ffbb6f6544cc352f867be42f1c6ca7ddcbd603c1079c3c9",
+      "role": "preprocessed_evaluation",
+      "figures": [5]
+    },
+    {
+      "path": "artifacts/evaluation/synthetic_multistart/baseline_runs.csv",
+      "bytes": 361501,
+      "sha256": "ea4035d8dac09ebd9b9ac83e1507f779c6f956f8fd74e2abb1157b70abb1d971",
+      "role": "preprocessed_evaluation",
+      "figures": [5]
+    },
+    {
+      "path": "artifacts/evaluation/synthetic_multistart/joint_reconstruction.npy",
+      "bytes": 4224,
+      "sha256": "48b16464f78a4077b0437a4060d52598819017e0b0b1b3f330e13dfadbd73162",
+      "role": "preprocessed_evaluation",
+      "figures": [5]
+    },
+    {
+      "path": "artifacts/evaluation/synthetic_multistart/joint_runs.csv",
+      "bytes": 409478,
+      "sha256": "88763f1cdcf3dd7b99aa989d28743bccef184198e7d067a904a1affa3a746b62",
+      "role": "preprocessed_evaluation",
+      "figures": [5]
+    },
+    {
+      "path": "artifacts/evaluation/synthetic_multistart/spectra.csv",
+      "bytes": 4028,
+      "sha256": "48bd96533ad3f685cc4471789825f8b25322642ffa2fab96f4f939fc5181df5a",
+      "role": "preprocessed_evaluation",
+      "figures": [5]
+    },
+    {
+      "path": "figure_sources/figure_01_reference_conditioned_fitting.svg",
+      "bytes": 10049,
+      "sha256": "3f6afdaf5d011aa8ae878b81ece9cfd1320ef7ff0c84d601781eb2fd4376ea82",
+      "role": "editable_diagram_source",
+      "figures": [1]
+    },
+    {
+      "path": "figure_sources/figure_02_training_gradient_routing.svg",
+      "bytes": 11113,
+      "sha256": "776c2d3d26575055985abab0c5afa56cb35c2f1182a4dc5dc96b3fa6b65c1f38",
+      "role": "editable_diagram_source",
+      "figures": [2]
+    },
+    {
+      "path": "figure_sources/figure_03_measurement_setup.svg",
+      "bytes": 9832,
+      "sha256": "153d1ffda2a897b1b51c13b5ada78595870ce378bb506c6d87f78e289c74054c",
+      "role": "editable_diagram_source",
+      "figures": [3]
+    },
+    {
+      "path": "reference_figures/figure_01_reference_conditioned_fitting.png",
+      "bytes": 203217,
+      "sha256": "cce87a355ee349cc95869e5752d05e1b3433f7e928a8eea75a8094fba45aff15",
+      "role": "approved_reference_image",
+      "figures": [1]
+    },
+    {
+      "path": "reference_figures/figure_02_training_gradient_routing.png",
+      "bytes": 178046,
+      "sha256": "b10f49ab090e739a39cdafab647e02e2b29dc1f2dd5b236edad7f0ad48eae47e",
+      "role": "approved_reference_image",
+      "figures": [2]
+    },
+    {
+      "path": "reference_figures/figure_03_measurement_setup.png",
+      "bytes": 187102,
+      "sha256": "3cc75dea60575a760e4804e07001522899733bd6c1a0ff20dc89e29f95e71ebe",
+      "role": "approved_reference_image",
+      "figures": [3]
+    },
+    {
+      "path": "reference_figures/figure_04_synthetic_benchmark.png",
+      "bytes": 975897,
+      "sha256": "32806221a9e8047fe225e17deab0928b97a5c8b8fa6a3f454aa726e67c27afba",
+      "role": "approved_reference_image",
+      "figures": [4]
+    },
+    {
+      "path": "reference_figures/figure_05_joint_li_ne_multistart.png",
+      "bytes": 425175,
+      "sha256": "e5b050832c9ea24ff28b7c25522bd808fe643bd87a388cf83493c6a58c2e9f57",
+      "role": "approved_reference_image",
+      "figures": [5]
+    },
+    {
+      "path": "reference_figures/figure_06_checkpoint_ablation.png",
+      "bytes": 244874,
+      "sha256": "93d4959b8ba68f21a762ecaca2cde7ef81643a42a40c30a5ae5f95261e66ffc1",
+      "role": "approved_reference_image",
+      "figures": [6]
+    },
+    {
+      "path": "reference_figures/figure_07_model_conditioned_decomposition.png",
+      "bytes": 408382,
+      "sha256": "9cb6e1b2a1b13b640dadd563a9f00fd18860ef8d2558eefa542600876f152ba6",
+      "role": "approved_reference_image",
+      "figures": [7]
+    },
+    {
+      "path": "reference_figures/figure_08_measured_isotope_calibration.png",
+      "bytes": 156120,
+      "sha256": "4ddbd9f53edddbec2fd4665a6bea338a21678b257afaa5ead4432f634e207b1a",
+      "role": "approved_reference_image",
+      "figures": [8]
+    },
+    {
+      "path": "reference_figures/figure_09_joint_li_ne_refinement.png",
+      "bytes": 369409,
+      "sha256": "12ad24aef95af6636352e2da3112fd7b90f2e5d70dc411bf1048cdbfa7c67d47",
+      "role": "approved_reference_image",
+      "figures": [9]
+    }
+  ]
+}

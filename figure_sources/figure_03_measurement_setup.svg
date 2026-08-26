@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="950" viewBox="0 0 1800 950" role="img" aria-labelledby="title desc">
+  <title id="title">LPV-LIBS and simultaneous Neon-reference measurement</title>
+  <desc id="desc">A 532 nanometre pulse vaporizes a lithium hydroxide monohydrate solution below the liquid surface and a 1064 nanometre pulse produces plasma above the surface. Plasma emission and Neon reference emission enter separate fibers, are combined by a two-to-one coupler, dispersed by a dual-grating spectrometer and recorded in separate regions of the same EMCCD exposure.</desc>
+
+  <defs>
+    <marker id="arrowDark" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L17,9 L1,17 Z" fill="#263238"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L17,9 L1,17 Z" fill="#c62828"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L17,9 L1,17 Z" fill="#2e7d32"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L17,9 L1,17 Z" fill="#e66a00"/>
+    </marker>
+    <style>
+      .title { font-family: Arial, Helvetica, sans-serif; font-size: 48px; font-weight: 700; fill: #17212b; }
+      .subtitle { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 400; fill: #455a64; }
+      .boxTitle { font-family: Arial, Helvetica, sans-serif; font-size: 36px; font-weight: 700; fill: #17212b; }
+      .body { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 400; fill: #263238; }
+      .emph { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 700; fill: #17212b; }
+      .redText { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 700; fill: #c62828; }
+      .greenText { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 700; fill: #2e7d32; }
+      .orangeText { font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: 700; fill: #e66a00; }
+      .darkArrow { fill: none; stroke: #263238; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowDark); }
+      .darkLine { fill: none; stroke: #263238; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+      .redBeam { fill: none; stroke: #c62828; stroke-width: 5; stroke-linecap: round; marker-end: url(#arrowRed); }
+      .greenBeam { fill: none; stroke: #2e7d32; stroke-width: 5; stroke-linecap: round; marker-end: url(#arrowGreen); }
+      .orangeArrow { fill: none; stroke: #e66a00; stroke-width: 5; stroke-linecap: round; marker-end: url(#arrowOrange); }
+    </style>
+  </defs>
+
+  <rect width="1800" height="950" fill="#ffffff"/>
+  <text class="title" x="40" y="58">LPV-LIBS with a simultaneous Neon reference</text>
+  <text class="subtitle" x="40" y="104">Lithium and Neon regions are dispersed by the same spectrometer and recorded in one EMCCD exposure.</text>
+
+  <!-- Laser source -->
+  <rect x="35" y="250" width="260" height="380" rx="18" fill="#f2f4f6" stroke="#52616b" stroke-width="4"/>
+  <text class="boxTitle" x="165" y="400" text-anchor="middle">Nd:YAG laser</text>
+  <text class="body" x="165" y="448" text-anchor="middle">6 ns</text>
+  <text class="body" x="165" y="492" text-anchor="middle">20 Hz</text>
+
+  <!-- Repeated beam-conditioning optics -->
+  <text class="emph" x="390" y="205" text-anchor="middle">Mirror</text>
+  <text class="emph" x="515" y="205" text-anchor="middle">PBS</text>
+  <text class="emph" x="665" y="205" text-anchor="middle">75 mm lens</text>
+
+  <text class="redText" x="430" y="286" text-anchor="middle">1064 nm · 80 mJ</text>
+  <path class="redBeam" d="M295,330 H365"/>
+  <polygon points="375,300 394,290 420,350 401,360" fill="#f7f7f7" stroke="#263238" stroke-width="4"/>
+  <path class="redBeam" d="M420,330 H480"/>
+  <rect x="485" y="295" width="65" height="70" fill="#f7f7f7" stroke="#263238" stroke-width="4"/>
+  <line x1="488" y1="362" x2="547" y2="298" stroke="#263238" stroke-width="3"/>
+  <path class="redBeam" d="M550,330 H620"/>
+  <ellipse cx="660" cy="330" rx="17" ry="50" fill="#e8f5fb" stroke="#263238" stroke-width="4"/>
+  <path class="redBeam" d="M677,330 H803"/>
+
+  <text class="greenText" x="430" y="520" text-anchor="middle">532 nm · 50 mJ</text>
+  <path class="greenBeam" d="M295,560 H365"/>
+  <polygon points="375,530 394,520 420,580 401,590" fill="#f7f7f7" stroke="#263238" stroke-width="4"/>
+  <path class="greenBeam" d="M420,560 H480"/>
+  <rect x="485" y="525" width="65" height="70" fill="#f7f7f7" stroke="#263238" stroke-width="4"/>
+  <line x1="488" y1="592" x2="547" y2="528" stroke="#263238" stroke-width="3"/>
+  <path class="greenBeam" d="M550,560 H620"/>
+  <ellipse cx="660" cy="560" rx="17" ry="50" fill="#e8f5fb" stroke="#263238" stroke-width="4"/>
+  <path class="greenBeam" d="M677,560 H835"/>
+
+  <!-- Sample cell and spatially separated foci -->
+  <rect x="800" y="225" width="160" height="470" fill="#ffffff" stroke="#263238" stroke-width="4"/>
+  <rect x="804" y="530" width="152" height="161" fill="#dfe5ff"/>
+  <line x1="804" y1="530" x2="956" y2="530" stroke="#4a5db8" stroke-width="4"/>
+  <text class="body" x="880" y="645" text-anchor="middle" font-size="32">LiOH·H₂O</text>
+  <text class="body" x="880" y="682" text-anchor="middle">solution</text>
+  <text class="body" x="880" y="520" text-anchor="middle">interface</text>
+
+  <polygon points="880,270 894,305 930,286 913,322 951,334 913,346 930,382 894,363 880,400 866,363 830,382 847,346 809,334 847,322 830,286 866,305" fill="#ffd72e" stroke="#263238" stroke-width="4"/>
+  <text class="emph" x="880" y="255" text-anchor="middle">Plasma</text>
+
+  <path d="M850,550 C830,530 870,510 850,490 C830,470 870,450 850,430 C830,410 870,390 850,370" fill="none" stroke="#2e7d32" stroke-width="4" marker-end="url(#arrowGreen)"/>
+  <path class="greenBeam" d="M804,560 H846"/>
+  <text class="greenText" x="745" y="465" text-anchor="middle">vapor</text>
+
+  <line x1="980" y1="350" x2="980" y2="530" stroke="#6b7780" stroke-width="3"/>
+  <line x1="970" y1="350" x2="990" y2="350" stroke="#6b7780" stroke-width="3"/>
+  <line x1="970" y1="530" x2="990" y2="530" stroke="#6b7780" stroke-width="3"/>
+  <text class="body" x="995" y="450">≈7 mm</text>
+  <line x1="980" y1="530" x2="980" y2="570" stroke="#6b7780" stroke-width="3"/>
+  <line x1="970" y1="570" x2="990" y2="570" stroke="#6b7780" stroke-width="3"/>
+  <text class="body" x="995" y="590">≈3 mm</text>
+
+  <!-- LIBS collection path -->
+  <text class="emph" x="1060" y="205" text-anchor="middle">Collection lens</text>
+  <path class="orangeArrow" d="M960,330 H1015"/>
+  <ellipse cx="1045" cy="330" rx="17" ry="52" fill="#e8f5fb" stroke="#263238" stroke-width="4"/>
+  <path class="orangeArrow" d="M1062,330 H1110"/>
+  <path class="darkLine" d="M1110,330 C1170,330 1190,375 1220,375"/>
+  <text class="body" x="1170" y="292" text-anchor="middle">Fiber 1 (LIBS)</text>
+
+  <!-- Coupler -->
+  <rect x="1220" y="330" width="180" height="170" rx="16" fill="#f2f4f6" stroke="#263238" stroke-width="4"/>
+  <text class="boxTitle" x="1310" y="402" text-anchor="middle">2 × 1</text>
+  <text class="body" x="1310" y="450" text-anchor="middle">coupler</text>
+
+  <!-- Neon reference path -->
+  <rect x="840" y="785" width="340" height="115" rx="16" fill="#fff8ee" stroke="#9a6b24" stroke-width="4"/>
+  <text class="boxTitle" x="1010" y="830" text-anchor="middle">Ne reference lamp</text>
+  <text class="body" x="1010" y="874" text-anchor="middle">671.70430 nm</text>
+  <path class="orangeArrow" d="M1180,842 H1210"/>
+  <ellipse cx="1240" cy="842" rx="17" ry="48" fill="#e8f5fb" stroke="#263238" stroke-width="4"/>
+  <path class="darkLine" d="M1257,842 H1310 C1340,842 1340,760 1340,500"/>
+  <text class="body" x="1285" y="735" text-anchor="end">Fiber 2 (Ne)</text>
+
+  <!-- Spectrometer -->
+  <path class="darkArrow" d="M1400,415 H1450"/>
+  <text class="body" x="1445" y="315" text-anchor="end">MMF</text>
+  <rect x="1460" y="190" width="310" height="330" rx="18" fill="#f2f4f6" stroke="#263238" stroke-width="4"/>
+  <text class="boxTitle" x="1615" y="240" text-anchor="middle">Dual-grating</text>
+  <text class="boxTitle" x="1615" y="282" text-anchor="middle">spectrometer</text>
+  <text class="body" x="1615" y="334" text-anchor="middle">2 gratings</text>
+  <text class="body" x="1615" y="376" text-anchor="middle">2400 grooves/mm</text>
+  <text class="body" x="1615" y="424" text-anchor="middle">f = 1 m</text>
+  <text class="body" x="1615" y="472" text-anchor="middle">≈10 pm FWHM</text>
+
+  <!-- Same-frame detector regions -->
+  <path class="darkArrow" d="M1615,520 V550"/>
+  <rect x="1460" y="550" width="310" height="360" rx="18" fill="#f7f5fb" stroke="#263238" stroke-width="4"/>
+  <text class="boxTitle" x="1615" y="598" text-anchor="middle">EMCCD frame</text>
+  <text class="body" x="1615" y="642" text-anchor="middle">500 ms exposure</text>
+  <text class="body" x="1615" y="682" text-anchor="middle">wavelength / nm</text>
+
+  <rect x="1475" y="700" width="280" height="82" rx="12" fill="#eaf4fa" stroke="#236a96" stroke-width="3"/>
+  <text class="emph" x="1615" y="733" text-anchor="middle">Lithium region</text>
+  <text class="body" x="1615" y="770" text-anchor="middle">670.38–671.21</text>
+
+  <rect x="1475" y="800" width="280" height="82" rx="12" fill="#eef5f1" stroke="#4f7f68" stroke-width="3"/>
+  <text class="emph" x="1615" y="833" text-anchor="middle">Neon region</text>
+  <text class="body" x="1615" y="870" text-anchor="middle">671.21–672.03</text>
+</svg>

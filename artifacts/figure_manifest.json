@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "figures": [
+    {
+      "number": 1,
+      "filename": "figure_01_reference_conditioned_fitting.png",
+      "generator": "lithium_libs_solution_selection.figures.diagrams",
+      "mode": "svg_rasterization",
+      "reference_sha256": "cce87a355ee349cc95869e5752d05e1b3433f7e928a8eea75a8094fba45aff15",
+      "expected_pinned_environment_status": "PASS_PIXEL_EXACT",
+      "required_files": [
+        "figure_sources/figure_01_reference_conditioned_fitting.svg",
+        "reference_figures/figure_01_reference_conditioned_fitting.png"
+      ]
+    },
+    {
+      "number": 2,
+      "filename": "figure_02_training_gradient_routing.png",
+      "generator": "lithium_libs_solution_selection.figures.diagrams",
+      "mode": "svg_rasterization",
+      "reference_sha256": "b10f49ab090e739a39cdafab647e02e2b29dc1f2dd5b236edad7f0ad48eae47e",
+      "expected_pinned_environment_status": "PASS_PIXEL_EXACT",
+      "required_files": [
+        "figure_sources/figure_02_training_gradient_routing.svg",
+        "reference_figures/figure_02_training_gradient_routing.png"
+      ]
+    },
+    {
+      "number": 3,
+      "filename": "figure_03_measurement_setup.png",
+      "generator": "lithium_libs_solution_selection.figures.diagrams",
+      "mode": "approved_static_raster_copy",
+      "static_raster_source": true,
+      "reference_sha256": "3cc75dea60575a760e4804e07001522899733bd6c1a0ff20dc89e29f95e71ebe",
+      "expected_pinned_environment_status": "PASS_BYTE_EXACT",
+      "provenance_note": "The editable SVG is included, but the original rasterizer command and font provenance were not recoverable.",
+      "required_files": [
+        "figure_sources/figure_03_measurement_setup.svg",
+        "reference_figures/figure_03_measurement_setup.png"
+      ]
+    },
+    {
+      "number": 4,
+      "filename": "figure_04_synthetic_benchmark.png",
+      "generator": "lithium_libs_solution_selection.figures.figure04_synthetic_benchmark",
+      "mode": "preprocessed_evaluation_plot",
+      "reference_sha256": "32806221a9e8047fe225e17deab0928b97a5c8b8fa6a3f454aa726e67c27afba",
+      "expected_pinned_environment_status": "PASS_BYTE_EXACT",
+      "required_files": [
+        "artifacts/evaluation/synthetic_benchmark/random_spectra.csv",
+        "artifacts/evaluation/synthetic_benchmark/generation_seeds.npy",
+        "artifacts/evaluation/synthetic_benchmark/sampling_metadata.json",
+        "reference_figures/figure_04_synthetic_benchmark.png"
+      ]
+    },
+    {
+      "number": 5,
+      "filename": "figure_05_joint_li_ne_multistart.png",
+      "generator": "lithium_libs_solution_selection.figures.figure05_joint_multistart",
+      "mode": "preprocessed_evaluation_plot",
+      "reference_sha256": "e5b050832c9ea24ff28b7c25522bd808fe643bd87a388cf83493c6a58c2e9f57",
+      "expected_pinned_environment_status": "PASS_BYTE_EXACT",
+      "required_files": [
+        "artifacts/evaluation/synthetic_multistart/arrays.npz",
+        "artifacts/evaluation/synthetic_multistart/baseline_runs.csv",
+        "artifacts/evaluation/synthetic_multistart/joint_reconstruction.npy",
+        "artifacts/evaluation/synthetic_multistart/joint_runs.csv",
+        "artifacts/evaluation/synthetic_multistart/spectra.csv",
+        "reference_figures/figure_05_joint_li_ne_multistart.png"
+      ]
+    },
+    {
+      "number": 6,
+      "filename": "figure_06_checkpoint_ablation.png",
+      "generator": "lithium_libs_solution_selection.figures.figure06_checkpoint_ablation",
+      "mode": "paired_checkpoint_evaluation_plot",
+      "reference_sha256": "93d4959b8ba68f21a762ecaca2cde7ef81643a42a40c30a5ae5f95261e66ffc1",
+      "expected_pinned_environment_status": "PASS_BYTE_EXACT",
+      "required_files": [
+        "artifacts/evaluation/component_supervision/full_objective.npz",
+        "artifacts/evaluation/component_supervision/without_component_supervision.npz",
+        "reference_figures/figure_06_checkpoint_ablation.png"
+      ]
+    },
+    {
+      "number": 7,
+      "filename": "figure_07_model_conditioned_decomposition.png",
+      "generator": "lithium_libs_solution_selection.figures.figure07_decomposition",
+      "mode": "preprocessed_evaluation_plot",
+      "reference_sha256": "9cb6e1b2a1b13b640dadd563a9f00fd18860ef8d2558eefa542600876f152ba6",
+      "expected_pinned_environment_status": "PASS_BYTE_EXACT",
+      "required_files": [
+        "artifacts/evaluation/measured_decomposition/component_fit_overlay_A.csv",
+        "artifacts/evaluation/measured_decomposition/component_fit_overlay_B.csv",
+        "artifacts/evaluation/measured_decomposition/isotope_labels.csv",
+        "artifacts/evaluation/measured_decomposition/obs_recon_overlap_A.csv",
+        "artifacts/evaluation/measured_decomposition/obs_recon_overlap_B.csv",
+        "reference_figures/figure_07_model_conditioned_decomposition.png"
+      ]
+    },
+    {
+      "number": 8,
+      "filename": "figure_08_measured_isotope_calibration.png",
+      "generator": "lithium_libs_solution_selection.figures.figure08_isotope_calibration",
+      "mode": "preprocessed_evaluation_plot",
+      "reference_sha256": "4ddbd9f53edddbec2fd4665a6bea338a21678b257afaa5ead4432f634e207b1a",
+      "expected_pinned_environment_status": "PASS_BYTE_EXACT",
+      "provenance_note": "Uses the authoritative LiOH mole-fraction correction and warm-start session-calibration evaluation.",
+      "required_files": [
+        "artifacts/evaluation/measured_standards/calibration.json",
+        "artifacts/evaluation/measured_standards/isotope_labels.csv",
+        "artifacts/evaluation/measured_standards/measurement_outputs.npz",
+        "artifacts/evaluation/measured_standards/per_file.csv",
+        "artifacts/evaluation/measured_standards/summary.csv",
+        "reference_figures/figure_08_measured_isotope_calibration.png"
+      ]
+    },
+    {
+      "number": 9,
+      "filename": "figure_09_joint_li_ne_refinement.png",
+      "generator": "lithium_libs_solution_selection.figures.figure09_joint_refinement",
+      "mode": "preprocessed_evaluation_plot",
+      "reference_sha256": "12ad24aef95af6636352e2da3112fd7b90f2e5d70dc411bf1048cdbfa7c67d47",
+      "expected_pinned_environment_status": "PASS_BYTE_EXACT",
+      "required_files": [
+        "artifacts/evaluation/joint_refinement/per_spectrum.csv",
+        "artifacts/evaluation/joint_refinement/summary.json",
+        "reference_figures/figure_09_joint_li_ne_refinement.png"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "design": {
+    "n_spectra": 260,
+    "shared_parameter": "pre-calibration detector-grid translation",
+    "li_ne_residual_weight": "equal per-channel mean squared residual",
+    "raw_shift_bounds_pixel": [
+      -14.0,
+      10.0
+    ]
+  },
+  "elapsed_seconds": 335.36784599999737,
+  "mapped_ne_fixed": {
+    "n": 260,
+    "li_rmse_mean": 0.09655245615111555,
+    "ne_rmse_mean": 0.046359257511014024,
+    "isotope_mae_pp": 18.61839071477679,
+    "isotope_error_higher_than_network_count": 238,
+    "measure_A_isotope_mae_pp": 17.886078781911113,
+    "measure_B_isotope_mae_pp": 19.350702647642468
+  },
+  "mapped_li_ne_joint": {
+    "n": 260,
+    "li_rmse_mean": 0.0966506043405947,
+    "ne_rmse_mean": 0.046462167783491,
+    "isotope_mae_pp": 17.784494327498987,
+    "isotope_error_higher_than_network_count": 235,
+    "measure_A_isotope_mae_pp": 17.412369239956515,
+    "measure_B_isotope_mae_pp": 18.156619415041455
+  }
+}

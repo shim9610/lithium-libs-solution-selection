@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lithium-libs-solution-selection"
+version = "1.0.0"
+description = "Reproducible figure and checkpoint package for solution selection in lithium LIBS fitting"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "matplotlib==3.10.8",
+  "numpy==2.4.2",
+  "Pillow==12.3.0",
+  "scipy==1.17.1",
+  "torch==2.11.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.3,<9"]
+
+[project.scripts]
+lithium-libs = "lithium_libs_solution_selection.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+license-files = []
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+markers = [
+  "slow: end-to-end training smoke tests",
+]

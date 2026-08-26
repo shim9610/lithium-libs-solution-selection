@@ -1,0 +1,8 @@
+* text=auto eol=lf
+*.png -text
+*.npy -text
+artifacts/** -text -diff
+reference_figures/** -text -diff
+*.pth filter=lfs diff=lfs merge=lfs -text
+*.npz filter=lfs diff=lfs merge=lfs -text
+artifacts/evaluation/synthetic_benchmark/random_spectra.csv filter=lfs diff=lfs merge=lfs -text

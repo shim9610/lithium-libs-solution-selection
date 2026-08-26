@@ -1,0 +1,18 @@
+{
+  "design": "Deterministic rejection sampling from the current simulator support, conditioned only on generated ground-truth quantities falling inside every decoder parameter bound.",
+  "target_samples": 50000,
+  "candidate_samples": 60153,
+  "acceptance_fraction": 0.8312137383006666,
+  "rejection_counts_by_parameter": {
+    "intensity_scale": 5,
+    "absorbance": 0,
+    "gaussian_fwhm_li7_GHz": 5623,
+    "lorentz_hot_increment_fwhm_GHz": 5025,
+    "lorentz_cold_fwhm_GHz": 0,
+    "absorption_offset_nm": 0,
+    "isotope_percent": 0,
+    "shift_pixel": 0
+  },
+  "first_candidate_seed": 2026072401,
+  "last_candidate_seed": 2026132553
+}
