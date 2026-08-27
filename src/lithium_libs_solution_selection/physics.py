@@ -76,6 +76,13 @@ class _TransitionLine:
             self.wavelength_nm,
             self.species,
         )
+        # Historical conversion retained exactly for checkpoint reproducibility.
+        # ``gaussian_linewidth`` is the nominal Doppler FWHM, whereas SciPy's
+        # ``voigt_profile`` expects the Gaussian standard deviation sigma.  The
+        # conventional conversion would divide by ``2 * sqrt(2 * log(2))``;
+        # the frozen training generator divided only by ``sqrt(2 * log(2))``.
+        # Consequently this argument is 2*sigma and the rendered Gaussian FWHM
+        # is twice the nominal value.  Do not correct it without retraining.
         gaussian_argument = gaussian_linewidth / (2 * np.log(2)) ** 0.5
         instrumental = abs(
             LIGHT_SPEED_M_S
