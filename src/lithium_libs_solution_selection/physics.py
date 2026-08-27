@@ -79,10 +79,17 @@ class _TransitionLine:
         # Historical conversion retained exactly for checkpoint reproducibility.
         # ``gaussian_linewidth`` is the nominal Doppler FWHM, whereas SciPy's
         # ``voigt_profile`` expects the Gaussian standard deviation sigma.  The
-        # conventional conversion would divide by ``2 * sqrt(2 * log(2))``;
-        # the frozen training generator divided only by ``sqrt(2 * log(2))``.
-        # Consequently this argument is 2*sigma and the rendered Gaussian FWHM
-        # is twice the nominal value.  Do not correct it without retraining.
+        # frozen generator divides only by ``sqrt(2 * log(2))``, so this argument
+        # is 2*sigma and the rendered Gaussian FWHM is twice the nominal value.
+        # This does not affect the paper's linewidth inference: training and
+        # evaluation both use the rendered linewidth directly in GHz, and no
+        # temperature is inferred from it.  It becomes a physical-interpretation
+        # error only if the sampled 300--20,000 K variable is claimed as an actual
+        # plasma-temperature range or a fitted linewidth is converted back to
+        # temperature.  For that different use, replace the denominator below by
+        # ``2 * sqrt(2 * log(2))``, then regenerate the training distribution,
+        # retrain the model, and repeat the evaluations; do not change this line
+        # when reproducing the released checkpoint.
         gaussian_argument = gaussian_linewidth / (2 * np.log(2)) ** 0.5
         instrumental = abs(
             LIGHT_SPEED_M_S
