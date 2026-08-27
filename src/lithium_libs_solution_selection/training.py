@@ -163,14 +163,12 @@ def _loss_for_batch(
     config: TrainingConfig,
     isotope_bin_centres: torch.Tensor,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    inputs, frame_shift, isotope_target, lithium6_percentage, targets = batch
-    components, isotope_logits, predicted_shift, observed_reconstruction = model(inputs)
+    inputs, isotope_target, lithium6_percentage, targets = batch
+    components, isotope_logits, _, observed_reconstruction = model(inputs)
     loss, _ = compute_training_loss(
         components,
         isotope_logits,
-        predicted_shift,
         observed_reconstruction,
-        frame_shift,
         isotope_target,
         targets,
         isotope_bin_centres,

@@ -12,14 +12,13 @@ import torch.nn.functional as F
 class TrainingLossWeights:
     """Weights for the final paper objective and its component ablation."""
 
-    component_profile: float = 1.0
-    component_peak_height: float = 1.0
+    component_mse: float = 1.0
+    component_relative_l1: float = 1.0
+    component_peak_height_relative_l1: float = 1.0
     component_peak_position: float = 1.0
     canonical_reconstruction: float = 1.0
     observed_reconstruction: float = 1.0
-    direct_shift_supervision: float = 0.0
     isotope_kl: float = 1.0
-    isotope_entropy: float = 0.0
 
     @classmethod
     def full_objective(cls) -> "TrainingLossWeights":
@@ -30,8 +29,9 @@ class TrainingLossWeights:
         """Retain both reconstruction terms and KL, remove component targets."""
 
         return cls(
-            component_profile=0.0,
-            component_peak_height=0.0,
+            component_mse=0.0,
+            component_relative_l1=0.0,
+            component_peak_height_relative_l1=0.0,
             component_peak_position=0.0,
         )
 
@@ -44,9 +44,7 @@ class TrainingLossBreakdown:
     component_peak_position: torch.Tensor
     canonical_reconstruction: torch.Tensor
     observed_reconstruction: torch.Tensor
-    direct_shift_supervision: torch.Tensor
     isotope_kl: torch.Tensor
-    isotope_entropy_reciprocal: torch.Tensor
 
     def detached_floats(self) -> dict[str, float]:
         return {
@@ -116,9 +114,7 @@ def _masked_reconstruction_error(
 def compute_training_loss(
     canonical_components: torch.Tensor,
     isotope_logits: torch.Tensor,
-    predicted_shift_px: torch.Tensor,
     observed_reconstruction: torch.Tensor,
-    applied_frame_shift_px: torch.Tensor,
     isotope_target: torch.Tensor,
     targets: torch.Tensor,
     isotope_bin_centres: torch.Tensor,
@@ -131,8 +127,8 @@ def compute_training_loss(
     ``targets`` has shape ``[B, 10, L]``: four canonical emission
     components, four canonical absorption components, the observed-frame
     reconstruction, and the canonical reconstruction.  The dominance switch
-    selects the lithium-7 D1 component below 50% lithium-6 and the lithium-6
-    D1 component at or above 50%.
+    selects the lithium-7 D2 component below 50% lithium-6 and the lithium-6
+    D2 component at or above 50%.
     """
 
     if weights is None:
@@ -216,44 +212,24 @@ def compute_training_loss(
         _minmax(observed_reconstruction[..., central]),
         targets[:, 8, central],
     )
-    direct_shift = F.smooth_l1_loss(
-        predicted_shift_px,
-        -applied_frame_shift_px.to(predicted_shift_px.dtype),
-    )
 
     log_probabilities = F.log_softmax(isotope_logits, dim=1)
-    probabilities = torch.softmax(isotope_logits, dim=1)
     isotope_kl = (
         isotope_target
         * (torch.log(isotope_target + 1e-8) - log_probabilities)
     ).sum(dim=1).mean()
-    expected_percentage = torch.sum(
-        probabilities * isotope_bin_centres,
-        dim=1,
-    )
-    histogram = torch.histc(
-        expected_percentage,
-        bins=isotope_target.shape[1],
-        min=0.0,
-        max=100.0,
-    )
-    histogram_probability = histogram / histogram.sum()
-    isotope_entropy_reciprocal = 1.0 / (
-        -torch.sum(
-            histogram_probability * torch.log(histogram_probability + 1e-8)
-        )
-        + 1e-8
-    )
 
-    total = (
-        weights.component_profile * (component_mse + component_relative_l1)
-        + weights.component_peak_height * peak_height
-        + weights.component_peak_position * peak_position
+    component_and_canonical_objective = (
+        weights.component_mse * component_mse
+        + weights.component_relative_l1 * component_relative_l1
         + weights.canonical_reconstruction * canonical_reconstruction
+        + weights.component_peak_height_relative_l1 * peak_height
+        + weights.component_peak_position * peak_position
+    )
+    total = (
+        component_and_canonical_objective
         + weights.observed_reconstruction * observed_reconstruction_loss
-        + weights.direct_shift_supervision * direct_shift
         + weights.isotope_kl * isotope_kl
-        + weights.isotope_entropy * isotope_entropy_reciprocal
     )
     breakdown = TrainingLossBreakdown(
         component_mse=component_mse,
@@ -262,9 +238,7 @@ def compute_training_loss(
         component_peak_position=peak_position,
         canonical_reconstruction=canonical_reconstruction,
         observed_reconstruction=observed_reconstruction_loss,
-        direct_shift_supervision=direct_shift,
         isotope_kl=isotope_kl,
-        isotope_entropy_reciprocal=isotope_entropy_reciprocal,
     )
     return total, breakdown
 

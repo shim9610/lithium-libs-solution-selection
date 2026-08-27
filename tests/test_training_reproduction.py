@@ -11,6 +11,14 @@ from lithium_libs_solution_selection.losses import (
     TrainingLossWeights,
     compute_training_loss,
 )
+from lithium_libs_solution_selection.simulation import (
+    CORE_EDGE_LORENTZIAN_INCREMENT_RANGE_GHZ,
+    EDGE_REGION_LORENTZIAN_LINEWIDTH_RANGE_GHZ,
+    EMISSION_ABSORPTION_OFFSET_RANGE_NM,
+    HISTORICAL_GAUSSIAN_WIDTH_SCALE_RANGE_K,
+    LITHIUM6_PERCENTAGE_RANGE,
+    PEAK_OPTICAL_DEPTH_RANGE,
+)
 from lithium_libs_solution_selection.training import TrainingConfig, run_training
 from lithium_libs_solution_selection.training_verification import (
     verify_training_implementation,
@@ -22,18 +30,14 @@ def _loss_inputs() -> tuple[torch.Tensor, ...]:
     batch, length, bins = 3, 512, 300
     components = torch.rand(batch, 8, length, requires_grad=True) + 0.1
     logits = torch.randn(batch, bins, requires_grad=True)
-    shift = torch.randn(batch, requires_grad=True)
     shifted_reconstruction = torch.rand(batch, length, requires_grad=True)
-    frame_shift = torch.randn(batch)
     isotope_target = torch.softmax(torch.randn(batch, bins), dim=1)
     targets = torch.rand(batch, 10, length) + 0.1
     bin_centres = torch.linspace(0.0, 100.0, bins)
     return (
         components,
         logits,
-        shift,
         shifted_reconstruction,
-        frame_shift,
         isotope_target,
         targets,
         bin_centres,
@@ -61,12 +65,18 @@ def test_component_ablation_removes_only_four_auxiliary_terms() -> None:
     torch.testing.assert_close(full - ablated, expected_difference)
 
 
-def test_inactive_direct_shift_term_has_no_gradient() -> None:
+def test_breakdown_contains_only_the_seven_active_objective_terms() -> None:
     inputs = _loss_inputs()
-    total, _ = compute_training_loss(*inputs)
-    total.backward()
-    predicted_shift = inputs[2]
-    assert predicted_shift.grad is None or torch.count_nonzero(predicted_shift.grad) == 0
+    _, breakdown = compute_training_loss(*inputs)
+    assert set(breakdown.detached_floats()) == {
+        "component_mse",
+        "component_relative_l1",
+        "component_peak_height_relative_l1",
+        "component_peak_position",
+        "canonical_reconstruction",
+        "observed_reconstruction",
+        "isotope_kl",
+    }
 
 
 def test_paper_training_update_and_optimizer_counts() -> None:
@@ -75,6 +85,15 @@ def test_paper_training_update_and_optimizer_counts() -> None:
     assert config.configured_adam_steps == 320_000
     assert config.validation_samples == 4096
     assert config.random_seed is None
+
+
+def test_lithium_generator_support_is_explicit() -> None:
+    assert LITHIUM6_PERCENTAGE_RANGE == (0.0, 100.0)
+    assert PEAK_OPTICAL_DEPTH_RANGE == (0.0, 2.0)
+    assert HISTORICAL_GAUSSIAN_WIDTH_SCALE_RANGE_K == (300.0, 20_000.0)
+    assert CORE_EDGE_LORENTZIAN_INCREMENT_RANGE_GHZ == (0.1, 120.0)
+    assert EDGE_REGION_LORENTZIAN_LINEWIDTH_RANGE_GHZ == (0.1, 20.0)
+    assert EMISSION_ABSORPTION_OFFSET_RANGE_NM == (-0.007, 0.007)
 
 
 def test_public_code_and_docs_have_no_development_version_labels() -> None:

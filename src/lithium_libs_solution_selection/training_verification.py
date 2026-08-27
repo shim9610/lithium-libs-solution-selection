@@ -30,9 +30,7 @@ _LOSS_TERMS = {
     "component_peak_position": 0.0031900566536933184,
     "canonical_reconstruction": 0.9247961640357971,
     "observed_reconstruction": 0.9408042430877686,
-    "direct_shift_supervision": 0.8972537517547607,
     "isotope_kl": 0.905625581741333,
-    "isotope_entropy_reciprocal": 0.7213475108146667,
 }
 _ONE_STEP_LOSS = 6.795426368713379
 _ONE_STEP_STATE_HASH = "bbbbbd9d07ab64718a76d63eeefee5c5e1abadf266e762e3b4844ba7b87634f2"
@@ -103,18 +101,18 @@ def _loss_inputs() -> tuple[torch.Tensor, ...]:
     batch_size, length, classes = 4, 512, 300
     components = torch.rand(batch_size, 8, length, requires_grad=True) + 0.05
     logits = torch.randn(batch_size, classes, requires_grad=True)
-    shift = torch.randn(batch_size, requires_grad=True)
+    # Preserve the frozen verification fixture's RNG positions after narrowing
+    # the public objective signature to tensors used by the final loss.
+    _ = torch.randn(batch_size)
     reconstruction = torch.rand(batch_size, length, requires_grad=True)
-    frame_shift = torch.randn(batch_size)
+    _ = torch.randn(batch_size)
     isotope_target = torch.softmax(torch.randn(batch_size, classes), dim=1)
     targets = torch.rand(batch_size, 10, length) + 0.02
     bin_centres = torch.linspace(0.0, 100.0, classes)
     return (
         components,
         logits,
-        shift,
         reconstruction,
-        frame_shift,
         isotope_target,
         targets,
         bin_centres,
@@ -207,13 +205,14 @@ def _optimizer_step_checks() -> list[TrainingImplementationCheck]:
             value.unsqueeze(0) if value.ndim > 0 else value.unsqueeze(0)
             for value in tensors
         )
-        inputs, frame_shift, isotope_target, _, targets = batch
+        inputs, isotope_target, _, targets = batch
         bin_centres = torch.linspace(0.0, 100.0, 300)
         optimizer = torch.optim.Adam(model.parameters(), lr=0.0006)
         outputs = model(inputs)
         loss, _ = compute_training_loss(
-            *outputs,
-            frame_shift,
+            outputs[0],
+            outputs[1],
+            outputs[3],
             isotope_target,
             targets,
             bin_centres,

@@ -23,10 +23,20 @@ NEON_PIXEL_START = 1088
 NEON_PIXEL_END = 1600
 
 LIBS_INTENSITY_SCALE = 10_000.0
+LITHIUM6_PERCENTAGE_RANGE = (0.0, 100.0)
+PEAK_OPTICAL_DEPTH_RANGE = (0.0, 2.0)
+# Historical generator coordinate used only to span Gaussian linewidths.  It is
+# not an independently validated plasma-temperature range; report and evaluate
+# the resulting rendered linewidths in GHz (see the conversion in physics.py).
+HISTORICAL_GAUSSIAN_WIDTH_SCALE_RANGE_K = (300.0, 20_000.0)
+CORE_EDGE_LORENTZIAN_INCREMENT_RANGE_GHZ = (0.1, 120.0)
+EDGE_REGION_LORENTZIAN_LINEWIDTH_RANGE_GHZ = (0.1, 20.0)
+EMISSION_ABSORPTION_OFFSET_RANGE_NM = (-0.007, 0.007)
+
 REFERENCE_LITHIUM6_PERCENTAGE = 7.5
 REFERENCE_TO_LIBS_INTENSITY_RANGE = (0.3, 1.5)
-REFERENCE_TEMPERATURE_K = 600.0
-REFERENCE_TEMPERATURE_VARIATION = 0.10
+REFERENCE_GAUSSIAN_WIDTH_SCALE_K = 600.0
+REFERENCE_GAUSSIAN_WIDTH_SCALE_VARIATION = 0.10
 NEON_CENTRE_NM = 671.70430
 NEON_FWHM_NM = 0.008846
 NEON_FWHM_VARIATION = 0.05
@@ -45,7 +55,7 @@ class GeneratorParameters:
     intensity_scale: float
     lithium6_percentage: float
     peak_optical_depth: float
-    temperature_k: float
+    gaussian_width_scale_k: float
     core_edge_lorentzian_increment_ghz: float
     edge_region_lorentzian_linewidth_ghz: float
     emission_absorption_offset_nm: float
@@ -55,6 +65,12 @@ class GeneratorParameters:
 
     @property
     def core_region_lorentzian_linewidth_ghz(self) -> float:
+        """Return edge linewidth plus the sampled core--edge increment.
+
+        This quantity is not sampled independently. Its derived support is
+        0.2--140 GHz and is nonuniform because it is the sum of two uniforms.
+        """
+
         return (
             self.core_edge_lorentzian_increment_ghz
             + self.edge_region_lorentzian_linewidth_ghz
@@ -150,18 +166,28 @@ def create_isotope_target_distribution(
 
 
 def _random_generator_parameters() -> tuple[GeneratorParameters, float, float, float]:
-    lithium6_percentage = random.uniform(0.0, 100.0)
-    peak_optical_depth = random.uniform(0.0, 2.0)
-    temperature_k = random.uniform(300.0, 20_000.0)
-    core_increment_ghz = random.uniform(0.1, 120.0)
-    edge_linewidth_ghz = random.uniform(0.1, 20.0)
-    emission_absorption_offset_nm = random.uniform(-0.007, 0.007)
+    # Reproducibility contract: the order and number of Python-random draws in
+    # this function are part of the frozen generator and must not be changed.
+    lithium6_percentage = random.uniform(*LITHIUM6_PERCENTAGE_RANGE)
+    peak_optical_depth = random.uniform(*PEAK_OPTICAL_DEPTH_RANGE)
+    gaussian_width_scale_k = random.uniform(
+        *HISTORICAL_GAUSSIAN_WIDTH_SCALE_RANGE_K
+    )
+    core_increment_ghz = random.uniform(
+        *CORE_EDGE_LORENTZIAN_INCREMENT_RANGE_GHZ
+    )
+    edge_linewidth_ghz = random.uniform(
+        *EDGE_REGION_LORENTZIAN_LINEWIDTH_RANGE_GHZ
+    )
+    emission_absorption_offset_nm = random.uniform(
+        *EMISSION_ABSORPTION_OFFSET_RANGE_NM
+    )
 
     reference_ratio = random.uniform(*REFERENCE_TO_LIBS_INTENSITY_RANGE)
     reference_intensity = LIBS_INTENSITY_SCALE * reference_ratio
-    reference_temperature = REFERENCE_TEMPERATURE_K * random.uniform(
-        1.0 - REFERENCE_TEMPERATURE_VARIATION,
-        1.0 + REFERENCE_TEMPERATURE_VARIATION,
+    reference_width_scale = REFERENCE_GAUSSIAN_WIDTH_SCALE_K * random.uniform(
+        1.0 - REFERENCE_GAUSSIAN_WIDTH_SCALE_VARIATION,
+        1.0 + REFERENCE_GAUSSIAN_WIDTH_SCALE_VARIATION,
     )
     neon_ratio = NEON_TO_REFERENCE_LITHIUM_RATIO * random.uniform(
         1.0 - NEON_TO_REFERENCE_LITHIUM_VARIATION,
@@ -176,7 +202,7 @@ def _random_generator_parameters() -> tuple[GeneratorParameters, float, float, f
         intensity_scale=LIBS_INTENSITY_SCALE,
         lithium6_percentage=lithium6_percentage,
         peak_optical_depth=peak_optical_depth,
-        temperature_k=temperature_k,
+        gaussian_width_scale_k=gaussian_width_scale_k,
         core_edge_lorentzian_increment_ghz=core_increment_ghz,
         edge_region_lorentzian_linewidth_ghz=edge_linewidth_ghz,
         emission_absorption_offset_nm=emission_absorption_offset_nm,
@@ -184,7 +210,7 @@ def _random_generator_parameters() -> tuple[GeneratorParameters, float, float, f
         gaussian_noise_standard_deviation=gaussian_noise,
         poisson_noise_scale=poisson_noise,
     )
-    return parameters, reference_intensity, reference_temperature, neon_intensity
+    return parameters, reference_intensity, reference_width_scale, neon_intensity
 
 
 def _fixed_generator_parameters() -> tuple[GeneratorParameters, float, float, float]:
@@ -193,7 +219,7 @@ def _fixed_generator_parameters() -> tuple[GeneratorParameters, float, float, fl
         intensity_scale=LIBS_INTENSITY_SCALE,
         lithium6_percentage=50.0,
         peak_optical_depth=1.0,
-        temperature_k=3000.0,
+        gaussian_width_scale_k=3000.0,
         core_edge_lorentzian_increment_ghz=40.0,
         edge_region_lorentzian_linewidth_ghz=10.0,
         emission_absorption_offset_nm=0.002,
@@ -204,7 +230,7 @@ def _fixed_generator_parameters() -> tuple[GeneratorParameters, float, float, fl
     return (
         parameters,
         reference_intensity,
-        REFERENCE_TEMPERATURE_K,
+        REFERENCE_GAUSSIAN_WIDTH_SCALE_K,
         reference_intensity * NEON_TO_REFERENCE_LITHIUM_RATIO,
     )
 
@@ -236,11 +262,11 @@ def generate_training_sample(
     """
 
     if random_parameters:
-        parameters, reference_intensity, reference_temperature, neon_intensity = (
+        parameters, reference_intensity, reference_width_scale, neon_intensity = (
             _random_generator_parameters()
         )
     else:
-        parameters, reference_intensity, reference_temperature, neon_intensity = (
+        parameters, reference_intensity, reference_width_scale, neon_intensity = (
             _fixed_generator_parameters()
         )
 
@@ -261,7 +287,7 @@ def generate_training_sample(
         intensity_scale=parameters.intensity_scale,
         lithium6_percentage=parameters.lithium6_percentage,
         peak_optical_depth=parameters.peak_optical_depth,
-        temperature_k=parameters.temperature_k,
+        temperature_k=parameters.gaussian_width_scale_k,
         core_region_lorentzian_linewidth_ghz=(
             parameters.core_region_lorentzian_linewidth_ghz
         ),
@@ -286,7 +312,7 @@ def generate_training_sample(
         intensity_scale=reference_intensity,
         lithium6_percentage=REFERENCE_LITHIUM6_PERCENTAGE,
         peak_optical_depth=0.0,
-        temperature_k=reference_temperature,
+        temperature_k=reference_width_scale,
         core_region_lorentzian_linewidth_ghz=0.0,
         edge_region_lorentzian_linewidth_ghz=0.0,
         emission_absorption_offset_nm=0.0,
@@ -378,8 +404,14 @@ def generate_training_sample(
 
 
 __all__ = [
+    "CORE_EDGE_LORENTZIAN_INCREMENT_RANGE_GHZ",
+    "EDGE_REGION_LORENTZIAN_LINEWIDTH_RANGE_GHZ",
+    "EMISSION_ABSORPTION_OFFSET_RANGE_NM",
     "FRAME_SHIFT_RANGE_PX",
     "GeneratorParameters",
+    "HISTORICAL_GAUSSIAN_WIDTH_SCALE_RANGE_K",
+    "LITHIUM6_PERCENTAGE_RANGE",
+    "PEAK_OPTICAL_DEPTH_RANGE",
     "TrainingSample",
     "create_isotope_target_distribution",
     "generate_training_sample",

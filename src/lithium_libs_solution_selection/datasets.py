@@ -15,7 +15,6 @@ TensorSample = tuple[
     torch.Tensor,
     torch.Tensor,
     torch.Tensor,
-    torch.Tensor,
 ]
 
 
@@ -24,7 +23,6 @@ def sample_to_tensors(sample: TrainingSample) -> TensorSample:
 
     return (
         torch.tensor(sample.input_spectra, dtype=torch.float32),
-        torch.tensor(sample.applied_frame_shift_px, dtype=torch.float32),
         torch.tensor(sample.isotope_distribution, dtype=torch.float32),
         torch.tensor(sample.lithium6_percentage, dtype=torch.float32),
         torch.tensor(sample.targets, dtype=torch.float32),
@@ -93,7 +91,7 @@ class PregeneratedValidationDataset(Dataset[TensorSample]):
 
 
 def collate_training_samples(batch: Sequence[TensorSample]) -> TensorSample:
-    """Stack the five tensors returned by the simulation dataset."""
+    """Stack the four tensors used by the final training objective."""
 
     fields = zip(*batch, strict=True)
     return tuple(torch.stack(list(field), dim=0) for field in fields)  # type: ignore[return-value]

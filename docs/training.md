@@ -166,10 +166,6 @@ The prediction is cropped and then min--max normalized inside the crop. The
 target was min--max normalized over all 512 generator samples before cropping
 and is not normalized again.
 
-Direct shift Smooth-L1 and reciprocal histogram entropy are evaluated for
-audit visibility but have weight zero. They are not active terms in the
-published objective.
-
 ## Component-supervision ablation
 
 The component-supervision ablation retains only:
