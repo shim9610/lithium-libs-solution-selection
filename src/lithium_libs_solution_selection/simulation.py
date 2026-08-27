@@ -25,9 +25,14 @@ NEON_PIXEL_END = 1600
 LIBS_INTENSITY_SCALE = 10_000.0
 LITHIUM6_PERCENTAGE_RANGE = (0.0, 100.0)
 PEAK_OPTICAL_DEPTH_RANGE = (0.0, 2.0)
-# Historical generator coordinate used only to span Gaussian linewidths.  It is
-# not an independently validated plasma-temperature range; report and evaluate
-# the resulting rendered linewidths in GHz (see the conversion in physics.py).
+# The original generator used this K-valued variable to drive the Doppler-width
+# formula, but accidentally omitted a factor 2 when converting the resulting
+# FWHM to SciPy's Gaussian sigma. The released checkpoint was trained on those
+# profiles, so both the sampled range and conversion are retained for integrity.
+# Do not interpret 300--20,000 as a validated plasma-temperature range. For this
+# model and paper, interpret/report the actual rendered Gaussian FWHM in GHz:
+# rendered FWHM = 2 * gaussian_linewidth_ghz(scale, wavelength, species).
+# See the calculation and physical-temperature correction path in physics.py.
 HISTORICAL_GAUSSIAN_WIDTH_SCALE_RANGE_K = (300.0, 20_000.0)
 CORE_EDGE_LORENTZIAN_INCREMENT_RANGE_GHZ = (0.1, 120.0)
 EDGE_REGION_LORENTZIAN_LINEWIDTH_RANGE_GHZ = (0.1, 20.0)

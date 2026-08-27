@@ -99,13 +99,23 @@ The neon line is centred at 671.70430 nm, with a nominal 0.008846 nm FWHM
 varied by plus or minus 5%. Li and Ne share the two sampled noise-level scalars,
 but their noise realizations are independent.
 
-The historical SciPy generator passes an implementation-defined Gaussian
-coordinate to `voigt_profile` that is twice the conventional physical standard
-deviation. This behavior is deliberately retained because correcting it would
-change the distribution that trained the released checkpoint. The sampled
-temperature-like variable must therefore be interpreted as the generator's
-effective rendered-linewidth support, not as independently validated
-microscopic temperature truth.
+The original SciPy generator accidentally omitted the leading factor 2 when it
+converted a Doppler FWHM to the Gaussian standard deviation required by
+`voigt_profile`: it used `FWHM / sqrt(2 log(2))` instead of the conventional
+`FWHM / (2 sqrt(2 log(2)))`. Its supplied Gaussian standard deviation was
+therefore twice the conventional value, and its rendered Gaussian FWHM was
+twice the nominal Doppler FWHM. The released checkpoint was trained on these
+rendered profiles, so the historical calculation is deliberately retained to
+preserve checkpoint and training-distribution integrity.
+
+This convention does not affect the paper's stated linewidth task because the
+generated and fitted quantities are compared as effective rendered Gaussian
+FWHM in GHz, without inferring temperature. The sampled 300--20,000 values are
+only the K-valued internal driver of the historical width formula and must not
+be reported as a validated plasma-temperature range. A study that interprets
+them physically or converts fitted widths back to kelvin must correct the
+conversion, regenerate the training distribution, retrain the model, and repeat
+the evaluations.
 
 An unused reference-lithium spectrum and its detector noise are also evaluated
 before the neon noise draw. The result is not added to the input, but the draw

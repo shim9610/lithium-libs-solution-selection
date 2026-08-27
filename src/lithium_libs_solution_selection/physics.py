@@ -76,20 +76,25 @@ class _TransitionLine:
             self.wavelength_nm,
             self.species,
         )
-        # Historical conversion retained exactly for checkpoint reproducibility.
-        # ``gaussian_linewidth`` is the nominal Doppler FWHM, whereas SciPy's
-        # ``voigt_profile`` expects the Gaussian standard deviation sigma.  The
-        # frozen generator divides only by ``sqrt(2 * log(2))``, so this argument
-        # is 2*sigma and the rendered Gaussian FWHM is twice the nominal value.
-        # This does not affect the paper's linewidth inference: training and
-        # evaluation both use the rendered linewidth directly in GHz, and no
-        # temperature is inferred from it.  It becomes a physical-interpretation
-        # error only if the sampled 300--20,000 K variable is claimed as an actual
-        # plasma-temperature range or a fitted linewidth is converted back to
-        # temperature.  For that different use, replace the denominator below by
-        # ``2 * sqrt(2 * log(2))``, then regenerate the training distribution,
-        # retrain the model, and repeat the evaluations; do not change this line
-        # when reproducing the released checkpoint.
+        # The original generator accidentally omitted the leading factor 2 in
+        # the FWHM-to-sigma conversion. ``gaussian_linewidth`` is the nominal
+        # Doppler FWHM in GHz, while SciPy's ``voigt_profile`` expects sigma and
+        # would conventionally receive FWHM / (2 * sqrt(2 * log(2))). The frozen
+        # code instead divides by sqrt(2 * log(2)), so the supplied value is
+        # 2*sigma and the actually rendered Gaussian FWHM is
+        # ``2 * gaussian_linewidth`` in GHz.
+        #
+        # The released checkpoint was trained on those rendered profiles, so the
+        # accidental conversion is retained to preserve checkpoint and training-
+        # distribution integrity. This is harmless for the paper's task because
+        # generated and fitted Gaussian widths are compared as rendered FWHM in
+        # GHz; the sampled 300--20,000 values are not interpreted as a validated
+        # plasma-temperature range. It becomes an error only if those values are
+        # reported as physical kelvin or fitted widths are converted back to
+        # temperature. For such a temperature study, use the conventional
+        # denominator above, regenerate all training data, retrain the model, and
+        # repeat every evaluation. Do not change this line when reproducing the
+        # released checkpoint.
         gaussian_argument = gaussian_linewidth / (2 * np.log(2)) ** 0.5
         instrumental = abs(
             LIGHT_SPEED_M_S
