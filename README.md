@@ -143,6 +143,23 @@ joint input normalization, historical Gaussian-width convention, target order,
 seven loss terms, reconstruction mask, and ablation definition—is documented
 in [docs/training.md](docs/training.md).
 
+## Model compression
+
+Export a trusted checkpoint without optimizer state, or prepare a small
+physics-supervised student distillation run:
+
+```text
+lithium-libs export-checkpoint --output outputs/training/teacher_inference.pth
+lithium-libs distill --config configs/distillation_small.json --device cuda --dry-run
+```
+
+The default student has 2,664,722 parameters (three blocks, width 144, MLP
+512/256). Dry-run validates settings without loading models or starting
+training. Remove `--dry-run` on the compute machine to launch a fresh run.
+See [docs/compression.md](docs/compression.md) for setup, loss definitions,
+checkpoint formats, output files and evaluation requirements. Compression
+accuracy and speed have not been measured.
+
 ## Exact-first verification
 
 Visual verification tries a byte-for-byte match first, then decoded-pixel

@@ -33,6 +33,7 @@ DEFAULT_MODEL_CONFIG: dict[str, Any] = {
     "num_layers": 6,
     "patch_size": 8,
     "shift_max_px": 10.0,
+    "classifier_hidden_dims": (2048, 1024),
 }
 
 
@@ -181,13 +182,19 @@ class _ReferenceEncoder(nn.Module):
 
 
 class _ParameterHead(nn.Module):
-    def __init__(self, in_features: int, out_features: int):
+    def __init__(
+        self,
+        in_features: int,
+        out_features: int,
+        hidden_dims: Sequence[int] = (2048, 1024),
+    ):
         super().__init__()
-        self.fc1 = nn.Linear(in_features, 2048)
-        self.ln1 = nn.LayerNorm(2048)
-        self.fc2 = nn.Linear(2048, 1024)
-        self.ln2 = nn.LayerNorm(1024)
-        self.fc3 = nn.Linear(1024, out_features)
+        first, second = hidden_dims
+        self.fc1 = nn.Linear(in_features, first)
+        self.ln1 = nn.LayerNorm(first)
+        self.fc2 = nn.Linear(first, second)
+        self.ln2 = nn.LayerNorm(second)
+        self.fc3 = nn.Linear(second, out_features)
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(0.3)
 
@@ -405,12 +412,36 @@ class ReferenceConditionedSpectrumModel(nn.Module):
         num_layers: int = 6,
         patch_size: int = 8,
         shift_max_px: float = 10.0,
+        classifier_hidden_dims: Sequence[int] = (2048, 1024),
     ):
         super().__init__()
         if in_channels != 2:
             raise ValueError("the released model requires exactly two input channels")
-        if data_length % patch_size:
+        if patch_size <= 0 or data_length <= 0 or data_length % patch_size:
             raise ValueError("data_length must be divisible by patch_size")
+        if num_classes <= 0 or internal_length <= 0:
+            raise ValueError("num_classes and internal_length must be positive")
+        if base_dim <= 0 or base_dim % 2 or num_heads <= 0 or base_dim % num_heads:
+            raise ValueError("base_dim must be positive, even and divisible by num_heads")
+        if num_layers <= 0:
+            raise ValueError("num_layers must be positive")
+        if len(classifier_hidden_dims) != 2 or any(
+            not isinstance(width, int) or width <= 0 for width in classifier_hidden_dims
+        ):
+            raise ValueError("classifier_hidden_dims must contain two positive integers")
+        self.model_config = {
+            "in_channels": in_channels,
+            "base_dim": base_dim,
+            "norm_range": tuple(norm_range),
+            "num_classes": num_classes,
+            "data_length": data_length,
+            "internal_length": internal_length,
+            "num_heads": num_heads,
+            "num_layers": num_layers,
+            "patch_size": patch_size,
+            "shift_max_px": shift_max_px,
+            "classifier_hidden_dims": tuple(classifier_hidden_dims),
+        }
 
         self.range = list(norm_range)
         self.data_length = data_length
@@ -457,7 +488,7 @@ class ReferenceConditionedSpectrumModel(nn.Module):
 
         self.final_norm = nn.LayerNorm(base_dim)
         self.space_parm = nn.Parameter(torch.tensor(1.01538944244384765625))
-        self.classifier = _ParameterHead(base_dim, 8 * num_classes)
+        self.classifier = _ParameterHead(base_dim, 8 * num_classes, classifier_hidden_dims)
         self.get_predictvalue = ContinuousDecoder(num_classes=num_classes)
         self.voigt = _VoigtProfiles(data_length, internal_length, dtype=torch.float32)
         self.shift_max_px = float(shift_max_px)
@@ -503,6 +534,16 @@ class ReferenceConditionedSpectrumModel(nn.Module):
         norm: bool = True,
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         del mode  # Retained for compatibility with the training-time call signature.
+        logits = self.predict_parameter_logits(inputs, norm=norm)
+        return self.decode_parameter_logits(logits)
+
+    def predict_parameter_logits(
+        self,
+        inputs: torch.Tensor,
+        *,
+        norm: bool = True,
+    ) -> torch.Tensor:
+        """Encode both channels once and return all eight parameter rows."""
         if inputs.ndim != 3 or inputs.shape[1] != 2:
             raise ValueError("inputs must have shape [batch, 2, length]")
 
@@ -527,11 +568,17 @@ class ReferenceConditionedSpectrumModel(nn.Module):
             tokens = layer["cross_attn"](tokens, reference_features)
         tokens = self.final_norm(tokens)
 
-        parameter_logits = self.classifier(tokens[:, 0, :]).view(
+        return self.classifier(tokens[:, 0, :]).view(
             -1,
             8,
             self.num_classes,
         )
+
+    def decode_parameter_logits(
+        self,
+        parameter_logits: torch.Tensor,
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+        """Apply the unchanged physical decoder and historical gradient routing."""
         shift_px = self._decode_shift(parameter_logits[:, 7, :])
         (
             emission_parameters,
@@ -581,6 +628,24 @@ def _state_dict_from_checkpoint(checkpoint: object) -> Mapping[str, torch.Tensor
     return candidate
 
 
+def _model_config_from_checkpoint(
+    checkpoint: object,
+    model_config: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    config = dict(DEFAULT_MODEL_CONFIG)
+    if isinstance(checkpoint, Mapping) and "model_config" in checkpoint:
+        saved_config = checkpoint["model_config"]
+        if not isinstance(saved_config, Mapping):
+            raise ValueError("checkpoint model_config must be a mapping")
+        config.update(saved_config)
+    if model_config is not None:
+        config.update(model_config)
+    unknown = set(config).difference(DEFAULT_MODEL_CONFIG)
+    if unknown:
+        raise ValueError(f"Unknown model configuration fields: {sorted(unknown)}")
+    return config
+
+
 def load_checkpoint(
     checkpoint_path: str | PathLike[str],
     *,
@@ -597,15 +662,12 @@ def load_checkpoint(
     from another source you trust.
     """
 
-    config = dict(DEFAULT_MODEL_CONFIG)
-    if model_config is not None:
-        config.update(model_config)
-
     checkpoint = torch.load(
         checkpoint_path,
         map_location="cpu",
         weights_only=False,
     )
+    config = _model_config_from_checkpoint(checkpoint, model_config)
     state_dict = _state_dict_from_checkpoint(checkpoint)
     model = ReferenceConditionedSpectrumModel(**config)
     model.load_state_dict(state_dict, strict=strict)

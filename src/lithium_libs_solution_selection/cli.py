@@ -313,6 +313,84 @@ def _command_train(arguments: argparse.Namespace) -> int:
     return 0
 
 
+def _reject_frozen_destination(path: Path, project: ProjectPaths) -> None:
+    resolved = path.resolve()
+    for protected in (project.artifacts, project.references, project.figure_sources):
+        if resolved == protected or protected in resolved.parents:
+            raise ValueError("Compression outputs cannot overwrite frozen scientific inputs")
+
+
+def _teacher_hash(arguments: argparse.Namespace, checkpoint: Path, paths: ProjectPaths) -> str | None:
+    from .inference_verification import RELEASE_CHECKPOINT_SHA256
+
+    if arguments.expected_sha256 is not None:
+        return arguments.expected_sha256
+    if checkpoint.resolve() == (paths.checkpoints / "solution_selector.pth").resolve():
+        return RELEASE_CHECKPOINT_SHA256
+    return None
+
+
+def _command_export_checkpoint(arguments: argparse.Namespace) -> int:
+    from .checkpoints import export_checkpoint
+
+    paths = _project_paths(arguments)
+    checkpoint = Path(arguments.checkpoint) if arguments.checkpoint else (
+        paths.checkpoints / "solution_selector.pth"
+    )
+    destination = Path(arguments.output)
+    _reject_frozen_destination(destination, paths)
+    model_config = None
+    if arguments.model_config:
+        model_config = json.loads(Path(arguments.model_config).read_text(encoding="utf-8"))
+        if not isinstance(model_config, dict):
+            raise ValueError("model-config must contain a JSON object")
+    report = export_checkpoint(
+        checkpoint, destination,
+        expected_sha256=_teacher_hash(arguments, checkpoint, paths),
+        model_config=model_config,
+    )
+    print(json.dumps(asdict(report), indent=2))
+    return 0
+
+
+def _command_distill(arguments: argparse.Namespace) -> int:
+    from .distillation import DistillationConfig, run_distillation
+
+    paths = _project_paths(arguments)
+    config = (
+        DistillationConfig.from_dict(json.loads(Path(arguments.config).read_text(encoding="utf-8")))
+        if arguments.config else DistillationConfig()
+    )
+    config.validate()
+    checkpoint = Path(arguments.teacher) if arguments.teacher else (
+        paths.checkpoints / "solution_selector.pth"
+    )
+    destination = Path(arguments.output_dir) if arguments.output_dir else (
+        paths.output_training / "distillation"
+    )
+    _reject_frozen_destination(destination, paths)
+    print(json.dumps({
+        "configuration": asdict(config),
+        "teacher_checkpoint": str(checkpoint.resolve()),
+        "expected_teacher_sha256": _teacher_hash(arguments, checkpoint, paths),
+        "output_directory": str(destination.resolve()),
+        "device": arguments.device or "auto",
+        "configured_adam_steps": config.student.configured_adam_steps,
+    }, indent=2))
+    if arguments.dry_run:
+        return 0
+    result = run_distillation(
+        config=config, teacher_checkpoint=checkpoint,
+        output_directory=destination, device=arguments.device,
+        expected_teacher_sha256=_teacher_hash(arguments, checkpoint, paths),
+    )
+    print(f"Best training checkpoint: {result.best_checkpoint}")
+    print(f"Inference weights: {result.output_directory / 'best_model_inference.pth'}")
+    print(f"Best supervised validation loss: {result.best_validation_loss:.8g}")
+    print(f"Completed Adam steps: {result.completed_adam_steps}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="lithium-libs",
@@ -411,6 +489,29 @@ def build_parser() -> argparse.ArgumentParser:
         help="run one generated training and validation sample",
     )
     train.set_defaults(handler=_command_train)
+
+    export = commands.add_parser(
+        "export-checkpoint", help="remove optimizer state from a trusted checkpoint",
+    )
+    export.add_argument("--checkpoint", help="trusted source; defaults to the released teacher")
+    export.add_argument("--output", required=True, help="new inference checkpoint file")
+    export.add_argument("--expected-sha256", help="verify the source hash before loading")
+    export.add_argument("--model-config", help="architecture JSON for a custom bare state_dict")
+    export.set_defaults(handler=_command_export_checkpoint)
+
+    distill = commands.add_parser(
+        "distill", help="train a small student with physics supervision and a frozen teacher",
+    )
+    distill.add_argument("--config", help="JSON experiment configuration; omitted fields use defaults")
+    distill.add_argument("--teacher", help="trusted checkpoint; defaults to the released teacher")
+    distill.add_argument("--expected-sha256", help="verify the teacher hash before loading")
+    distill.add_argument("--output-dir", help="new/empty experiment output directory")
+    distill.add_argument("--device", help="PyTorch device, for example cuda or cpu")
+    distill.add_argument(
+        "--dry-run", action="store_true",
+        help="validate and print settings without loading models, generating data or training",
+    )
+    distill.set_defaults(handler=_command_distill)
     return parser
 
 
@@ -419,7 +520,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     arguments = parser.parse_args(argv)
     try:
         return int(arguments.handler(arguments))
-    except (OSError, RuntimeError, ValueError, KeyError) as error:
+    except (OSError, RuntimeError, ValueError, KeyError, TypeError) as error:
         print(f"ERROR: {error}", file=sys.stderr)
         return 2
 

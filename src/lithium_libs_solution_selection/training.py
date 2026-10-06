@@ -41,6 +41,7 @@ class TrainingConfig:
     patch_size: int = 8
     maximum_shift_px: float = 10.0
     dropout_probability: float = 0.0
+    classifier_hidden_dimensions: tuple[int, int] = (2048, 1024)
 
     batch_size: int = 1024
     online_updates: int = 20_000
@@ -59,6 +60,35 @@ class TrainingConfig:
     permanent_checkpoint_interval: int = 1000
 
     def validate(self) -> None:
+        integer_fields = (
+            "base_dimension", "number_of_attention_heads", "number_of_attention_blocks",
+            "input_channels", "output_length", "internal_length", "number_of_isotope_bins",
+            "patch_size", "batch_size", "online_updates", "samples_per_online_update",
+            "validation_samples", "number_of_workers", "prefetch_factor", "crop_size",
+            "checkpoint_interval", "permanent_checkpoint_interval",
+        )
+        if any(type(getattr(self, name)) is not int for name in integer_fields):
+            raise ValueError("Model dimensions and training counts must be integers")
+        if self.batch_size <= 0:
+            raise ValueError("batch_size must be positive")
+        if self.base_dimension <= 0 or self.base_dimension % 2:
+            raise ValueError("base_dimension must be positive and even")
+        if (
+            self.number_of_attention_heads <= 0
+            or self.base_dimension % self.number_of_attention_heads
+        ):
+            raise ValueError("base_dimension must be divisible by the attention head count")
+        if self.number_of_attention_blocks <= 0:
+            raise ValueError("number_of_attention_blocks must be positive")
+        if len(self.classifier_hidden_dimensions) != 2 or any(
+            not isinstance(width, int) or width <= 0
+            for width in self.classifier_hidden_dimensions
+        ):
+            raise ValueError("classifier_hidden_dimensions must contain two positive integers")
+        if self.patch_size <= 0 or self.output_length % self.patch_size:
+            raise ValueError("patch_size must be positive and divide output_length")
+        if self.checkpoint_interval <= 0 or self.permanent_checkpoint_interval <= 0:
+            raise ValueError("checkpoint intervals must be positive")
         if self.input_channels != 2:
             raise ValueError("the paper model requires two input channels")
         if self.output_length != 512 or self.internal_length != 512:
@@ -146,6 +176,7 @@ def build_training_model(config: TrainingConfig) -> ReferenceConditionedSpectrum
         num_layers=config.number_of_attention_blocks,
         patch_size=config.patch_size,
         shift_max_px=config.maximum_shift_px,
+        classifier_hidden_dims=config.classifier_hidden_dimensions,
     )
     set_dropout(model, config.dropout_probability)
     return model
@@ -229,6 +260,7 @@ def _checkpoint_payload(
         "completed_online_updates": metrics.online_update + 1,
         "completed_adam_steps": metrics.completed_adam_steps,
         "model_state_dict": model.state_dict(),
+        "model_config": model.model_config,
         "optimizer_state_dict": optimizer.state_dict(),
         "scheduler_state_dict": scheduler.state_dict(),
         "training_config": asdict(config),

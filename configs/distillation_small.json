@@ -1,0 +1,24 @@
+{
+  "student": {
+    "base_dimension": 144,
+    "number_of_attention_heads": 8,
+    "number_of_attention_blocks": 3,
+    "classifier_hidden_dimensions": [512, 256],
+    "batch_size": 32,
+    "online_updates": 20000,
+    "samples_per_online_update": 512,
+    "validation_samples": 1024,
+    "number_of_workers": 4,
+    "learning_rate": 0.0006,
+    "minimum_learning_rate": 0.0000001,
+    "random_seed": 42,
+    "checkpoint_interval": 10,
+    "permanent_checkpoint_interval": 1000
+  },
+  "temperature": 2.0,
+  "supervised_weight": 1.0,
+  "logits_weight": 1.0,
+  "shift_weight": 1.0,
+  "reconstruction_weight": 1.0,
+  "components_weight": 0.0
+}
