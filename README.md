@@ -159,6 +159,9 @@ training. Remove `--dry-run` on the compute machine to launch a fresh run.
 See [docs/compression.md](docs/compression.md) for setup, loss definitions,
 checkpoint formats, output files and evaluation requirements. Compression
 accuracy and speed have not been measured.
+한국어 단계별 실행 방법은 [docs/compression-ko.md](docs/compression-ko.md)에
+정리했습니다. 교사 파일 내보내기, dry-run, GPU 확인 실행, 본 학습과
+학생 모델 추론 예제를 포함합니다.
 
 ## Exact-first verification
 
